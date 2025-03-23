@@ -21,25 +21,29 @@ class SetupRolePermissions extends Migration
         }
 
         $adminRole = Role::findByName(Acl::ROLE_ADMIN);
-        $managerRole = Role::findByName(Acl::ROLE_MANAGER);
-        $editorRole = Role::findByName(Acl::ROLE_EDITOR);
-        $userRole = Role::findByName(Acl::ROLE_USER);
-        $visitorRole = Role::findByName(Acl::ROLE_VISITOR);
+       
+      
+      
+       
+        $donorRole = Role::findByName(Acl::ROLE_DONOR);
+        $foodbankRole = Role::findByName(Acl::ROLE_FOODBANK);
+        $recipientRole = Role::findByName(Acl::ROLE_RECIPIENT);
 
         foreach (Acl::permissions() as $permission) {
+            Log::info("Creating permission: " . $permission);
             Permission::findOrCreate($permission, 'api');
         }
 
         // Setup basic permission
         $adminRole->givePermissionTo(Acl::permissions());
-        $managerRole->givePermissionTo(Acl::permissions([Acl::PERMISSION_PERMISSION_MANAGE]));
-        $editorRole->givePermissionTo(Acl::menuPermissions());
-        $userRole->givePermissionTo([
-            Acl::PERMISSION_VIEW_MENU_PERMISSION,
-        ]);
-        $visitorRole->givePermissionTo([
-            Acl::PERMISSION_VIEW_MENU_PERMISSION,
-        ]);
+       
+     
+        $donorRole->givePermissionTo([ Acl::PERMISSION_VIEW_MENU_PERMISSION,]);
+        $foodbankRole->givePermissionTo([ Acl::PERMISSION_VIEW_MENU_PERMISSION,]);
+        $recipientRole->givePermissionTo([ Acl::PERMISSION_VIEW_MENU_PERMISSION,]);
+        //dd(Acl::permissions());
+
+
     }
 
     /**
@@ -56,7 +60,7 @@ class SetupRolePermissions extends Migration
         }
 
         /** @var \App\User[] $users */
-        $users = \App\Laravue\Models\User::all();
+        $users = \App\Models\User::all();
         foreach ($users as $user) {
             $roles = array_reverse(Acl::roles());
             foreach ($roles as $role) {

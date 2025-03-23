@@ -1,18 +1,18 @@
-import {createI18n} from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 import Cookies from 'js-cookie'
 import elementEnLocale from 'element-plus/dist/locale/en.mjs' // element-plus lang
-import elementZhLocale from 'element-plus/dist/locale/zh-cn.mjs'// element-plus lang
+import elementZhLocale from 'element-plus/dist/locale/zh-cn.mjs' // element-plus lang
 import enLocale from './en'
 import zhLocale from './zh'
 
 const messages = {
   en: {
     ...enLocale,
-    ...elementEnLocale,
+    ...elementEnLocale
   },
   zh: {
     ...zhLocale,
-    ...elementZhLocale,
+    ...elementZhLocale
   }
 }
 
@@ -37,7 +37,7 @@ const i18n = createI18n({
   messages,
   locale: getLanguage(),
   legacy: false,
-  globalInjection: true,
+  globalInjection: true
 })
 
 export default i18n

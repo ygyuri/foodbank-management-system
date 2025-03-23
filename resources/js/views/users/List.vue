@@ -1,85 +1,162 @@
 <template>
   <div class="app-container scroll-y">
     <div class="filter-container">
-      <el-input v-model="params.keyword" :placeholder="t('user.name') + '/' + t('user.email')" style="width: 200px;" class="filter-item"
-                @keyup.enter.native="handleFilter"/>
-      <el-select v-model="params.role" :placeholder="t('roles.name')" clearable style="width: 90px; margin-right: 5px;"
-                 class="filter-item"
-                 @change="handleFilter">
-        <el-option v-for="item in roles" :key="item" :label="uppercaseFirst(item)" :value="item"/>
+      <el-input
+        v-model="params.keyword"
+        :placeholder="t('user.name') + '/' + t('user.email')"
+        style="width: 200px"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-select
+        v-model="params.role"
+        :placeholder="t('roles.name')"
+        clearable
+        style="width: 90px; margin-right: 5px"
+        class="filter-item"
+        @change="handleFilter"
+      >
+        <el-option v-for="item in roles" :key="item" :label="uppercaseFirst(item)" :value="item" />
       </el-select>
+
       <el-button class="filter-item" type="primary" :icon="Search" @click="handleFilter">
         {{ t('table.search') }}
       </el-button>
-      <el-button class="filter-item" type="primary" :icon="Plus"
-                 @click="handleCreate">
+      <el-button class="filter-item" type="primary" :icon="Plus" @click="handleCreate">
         {{ t('table.add') }}
       </el-button>
     </div>
 
-    <custom-table :table-data="tableData" :table-column="basicColumn" :table-option="tableOption"
-                  :pagination="pagination" :paginate="true" :page-sizes="pageSizes" :loading="loading"
-                  @table-action="tableActions" @set-params="setParams">
+    <custom-table
+      :table-data="tableData"
+      :table-column="basicColumn"
+      :table-option="tableOption"
+      :pagination="pagination"
+      :paginate="true"
+      :page-sizes="pageSizes"
+      :loading="loading"
+      @table-action="tableActions"
+      @set-params="setParams"
+    >
       <template #roles="{ row }">
         <span>{{ row.roles.join(', ') }}</span>
       </template>
       <template #table_options="scope">
-        <div v-if="!scope.row.roles.includes('admin')">
-          <el-button v-for="(action, index) in tableOption.item_actions"
-                     :type="action.type ? action.type : 'primary'"
-                     :size="action.size ? action.size : ''"
-                     @click="tableActions(action.name, scope.row)">
+        <div v-if="!scope.row.roles.includes('user')">
+          <el-button
+            v-for="(action, index) in tableOption.item_actions"
+            :type="action.type ? action.type : 'primary'"
+            :size="action.size ? action.size : ''"
+            @click="tableActions(action.name, scope.row)"
+          >
             <el-svg-item :el-svg-name="action.icon" :title="action.label"></el-svg-item>
           </el-button>
         </div>
       </template>
     </custom-table>
 
-    <el-dialog :title="'Create new user'" v-model="dialogFormVisible">
+    <el-dialog :title="'Create New User'" v-model="dialogFormVisible">
       <div v-loading="userCreating" class="form-container">
-        <el-form ref="refUserForm" :rules="rules" :model="newUser" label-position="left" label-width="150px"
-                 style="max-width: 500px;">
+        <el-form
+          ref="refUserForm"
+          :rules="rules"
+          :model="newUser"
+          label-position="left"
+          label-width="150px"
+          style="max-width: 600px"
+        >
+          <!-- Role -->
           <el-form-item :label="t('user.role')" prop="role">
             <el-select v-model="newUser.role" class="filter-item" placeholder="Please select role">
-              <el-option v-for="item in nonAdminRoles" :key="item" :label="uppercaseFirst(item)" :value="item"/>
+              <el-option v-for="item in nonAdminRoles" :key="item" :label="uppercaseFirst(item)" :value="item" />
             </el-select>
           </el-form-item>
+
+          <!-- Name -->
           <el-form-item :label="t('user.name')" prop="name">
-            <el-input v-model="newUser.name"/>
+            <el-input v-model="newUser.name" />
           </el-form-item>
+
+          <!-- Email -->
           <el-form-item :label="t('user.email')" prop="email">
-            <el-input v-model="newUser.email"/>
+            <el-input v-model="newUser.email" />
           </el-form-item>
+
+          <!-- Password -->
           <el-form-item :label="t('user.password')" prop="password">
-            <el-input v-model="newUser.password" show-password/>
+            <el-input v-model="newUser.password" show-password />
           </el-form-item>
+
+          <!-- Confirm Password -->
           <el-form-item :label="t('user.confirmPassword')" prop="confirmPassword">
-            <el-input v-model="newUser.confirmPassword" show-password/>
+            <el-input v-model="newUser.confirmPassword" show-password />
           </el-form-item>
-          <el-form-item :label="$t('user.sex')">
+
+          <!-- Sex (Male/Female) -->
+          <el-form-item :label="t('user.sex')">
             <el-radio-group v-model="newUser.sex">
-              <el-radio :label="0">{{ $t('user.male') }}</el-radio>
-              <el-radio :label="1">{{ $t('user.female') }}</el-radio>
+              <el-radio :label="0">{{ t('user.male') }}</el-radio>
+              <el-radio :label="1">{{ t('user.female') }}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item :label="$t('user.birthday')">
+
+          <!-- Birthday -->
+          <el-form-item :label="t('user.birthday')">
             <el-date-picker
-                v-model="newUser.birthday_model"
-                type="datetime"
-                :placeholder="$t('user.birthday')"
-                value-format="YYYY-MM-DD HH:mm:ss"
+              v-model="newUser.birthday"
+              type="date"
+              placeholder="Select birthday"
+              value-format="YYYY-MM-DD"
             />
           </el-form-item>
-          <el-form-item :label="$t('user.description')">
-            <el-input
-                v-model="newUser.description"
-                maxlength="255"
-                :placeholder="$t('user.description')"
-                show-word-limit
-                type="textarea"
-            />
+
+          <!-- Phone Number -->
+          <el-form-item :label="t('user.phone')">
+            <el-input v-model="newUser.phone" />
+          </el-form-item>
+
+          <!-- Profile Picture -->
+          <el-form-item :label="t('user.profilePicture')">
+            <el-input v-model="newUser.profile_picture" />
+          </el-form-item>
+
+          <!-- Location -->
+          <el-form-item :label="t('user.location')">
+            <el-input v-model="newUser.location" />
+          </el-form-item>
+
+          <!-- Address -->
+          <el-form-item :label="t('user.address')">
+            <el-input v-model="newUser.address" />
+          </el-form-item>
+
+          <!-- Organization Name -->
+          <el-form-item :label="t('user.organizationName')">
+            <el-input v-model="newUser.organization_name" />
+          </el-form-item>
+
+          <!-- Recipient Type -->
+          <el-form-item :label="t('user.recipientType')">
+            <el-input v-model="newUser.recipient_type" />
+          </el-form-item>
+
+          <!-- Donor Type -->
+          <el-form-item :label="t('user.donorType')">
+            <el-input v-model="newUser.donor_type" />
+          </el-form-item>
+
+          <!-- Description -->
+          <el-form-item :label="t('user.description')">
+            <el-input v-model="newUser.description" type="textarea" maxlength="255" show-word-limit />
+          </el-form-item>
+
+          <!-- Notes -->
+          <el-form-item :label="t('user.notes')">
+            <el-input v-model="newUser.notes" type="textarea" maxlength="255" show-word-limit />
           </el-form-item>
         </el-form>
+
+        <!-- Footer Buttons -->
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
             {{ t('table.cancel') }}
@@ -97,24 +174,37 @@
           <div class="block">
             <el-form :model="currentUser" label-width="80px" label-position="top">
               <el-form-item label="Menus">
-                <el-tree ref="refMenuPermissions" :data="normalizedMenuPermissions"
-                         :default-checked-keys="permissionKeys(userMenuPermissions)"
-                         :props="permissionProps"
-                         show-checkbox node-key="id" class="permission-tree"/>
+                <el-tree
+                  ref="refMenuPermissions"
+                  :data="normalizedMenuPermissions"
+                  :default-checked-keys="permissionKeys(userMenuPermissions)"
+                  :props="permissionProps"
+                  show-checkbox
+                  node-key="id"
+                  class="permission-tree"
+                />
               </el-form-item>
             </el-form>
           </div>
-                    <div class="block">
-                      <el-form :model="currentUser" label-width="80px" label-position="top">
-                        <el-form-item label="Permissions">
-                          <el-tree ref="refOtherPermissions" :data="normalizedOtherPermissions" :default-checked-keys="permissionKeys(userOtherPermissions)" :props="permissionProps" show-checkbox node-key="id" class="permission-tree" />
-                        </el-form-item>
-                      </el-form>
-                    </div>
-                    <div class="clear-left" />
+          <div class="block">
+            <el-form :model="currentUser" label-width="80px" label-position="top">
+              <el-form-item label="Permissions">
+                <el-tree
+                  ref="refOtherPermissions"
+                  :data="normalizedOtherPermissions"
+                  :default-checked-keys="permissionKeys(userOtherPermissions)"
+                  :props="permissionProps"
+                  show-checkbox
+                  node-key="id"
+                  class="permission-tree"
+                />
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="clear-left" />
         </div>
-        <div style="text-align:right;">
-          <el-button type="danger" @click="dialogPermissionVisible=false">
+        <div style="text-align: right">
+          <el-button type="danger" @click="dialogPermissionVisible = false">
             {{ t('permission.cancel') }}
           </el-button>
           <el-button type="primary" @click="confirmPermission">
@@ -128,27 +218,28 @@
 
 <script>
 import CustomTable from '@/components/CustomTable.vue'
-import ElSvgItem from "@/components/Item/ElSvgItem.vue"
+import ElSvgItem from '@/components/Item/ElSvgItem.vue'
 import UserResource from '@/api/user'
 import Resource from '@/api/resource'
 import checkPermission from '@/utils/permission'
-import {ElMessage, ElMessageBox} from "element-plus"
-import {uppercaseFirst} from "../../utils"
-import {useI18n} from "vue-i18n"
-import {userStore} from "@/store/user" // Permission checking
-import {Search, Plus} from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { uppercaseFirst } from '../../utils'
+import { useI18n } from 'vue-i18n'
+import { userStore } from '@/store/user' // Permission checking
+import { Search, Plus } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
 export default {
-  components: {CustomTable, ElSvgItem},
+  components: { CustomTable, ElSvgItem },
   setup() {
-    const {t} = useI18n({useScope: 'global'})
-    const userResource = new UserResource()
-    const permissionResource = new Resource('permissions')
-    const refUserForm = ref(null)
-    const refMenuPermissions = ref(null)
-    const refOtherPermissions = ref(null)
+    const { t } = useI18n({ useScope: 'global' }) // Translation for i18n
+    const userResource = new UserResource() // Instance to interact with user API
+    const permissionResource = new Resource('permissions') // Instance to interact with permissions API
+    const refUserForm = ref(null) // Ref for the user form component
+    const refMenuPermissions = ref(null) // Ref for menu permissions
+    const refOtherPermissions = ref(null) // Ref for other permissions
 
+    // Validation for password confirmation
     const validateConfirmPassword = (rule, value, callback) => {
       if (value !== resData.newUser.password) {
         callback(new Error('Password is mismatched!'))
@@ -157,23 +248,29 @@ export default {
       }
     }
 
+    // Reactive data for handling the table and form state
     const resData = reactive({
-      basicColumn: [{
-        prop: 'id',
-        label: 'ID',
-        width: '100'
-      }, {
-        prop: 'name',
-        label: 'Name',
-      }, {
-        prop: 'email',
-        label: 'Email',
-      }, {
-        prop: 'roles',
-        label: 'Role',
-        width: '200',
-        slot: true
-      }],
+      basicColumn: [
+        {
+          prop: 'id',
+          label: 'ID',
+          width: '100'
+        },
+        {
+          prop: 'name',
+          label: 'Name'
+        },
+        {
+          prop: 'email',
+          label: 'Email'
+        },
+        {
+          prop: 'roles',
+          label: 'Role',
+          width: '200',
+          slot: true
+        }
+      ],
       tableOption: {},
       tableData: [],
       loading: true,
@@ -186,30 +283,49 @@ export default {
         page: 1,
         per_page: 10,
         keyword: '',
-        role: '',
+        role: ''
       },
-      roles: ['admin', 'manager', 'editor', 'user', 'visitor'],
-      nonAdminRoles: ['editor', 'user', 'visitor'],
+      roles: ['admin', 'manager', 'editor', 'user', 'visitor', 'donor', 'foodbank', 'recipient'],
+      nonAdminRoles: ['editor', 'user', 'visitor', 'donor', 'foodbank', 'recipient'],
       pageSizes: [10, 30, 50, 100],
       dialogFormVisible: ref(false),
       userCreating: false,
-      newUser: {},
+      // Stores details for the new user being created
+      newUser: {
+        role: '', // User role selection
+        name: '', // User's full name
+        email: '', // User's email address
+        password: '', // Password for the new user
+        confirmPassword: '', // Confirmation of the entered password
+        sex: null, // User gender (0 for male, 1 for female)
+        birthday: '', // User's date of birth (YYYY-MM-DD format)
+        phone: '', // User's phone number
+        profile_picture: '', // URL or path for profile picture
+        location: '', // User's geographical location
+        address: '', // User's physical address
+        organization_name: '', // Organization the user belongs to
+        recipient_type: '', // Type of recipient (if applicable)
+        donor_type: '', // Type of donor (if applicable)
+        description: '', // Short description about the user
+        notes: '' // Additional notes about the user
+      },
+
       rules: {
-        role: [{required: true, message: 'Role is required', trigger: 'change'}],
-        name: [{required: true, message: 'Name is required', trigger: 'blur'}],
+        role: [{ required: true, message: 'Role is required', trigger: 'change' }],
+        name: [{ required: true, message: 'Name is required', trigger: 'blur' }],
         email: [
-          {required: true, message: 'Email is required', trigger: 'blur'},
-          {type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change']},
+          { required: true, message: 'Email is required', trigger: 'blur' },
+          { type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change'] }
         ],
-        password: [{required: true, message: 'Password is required', trigger: 'blur'}],
-        confirmPassword: [{validator: validateConfirmPassword, trigger: 'blur'}],
+        password: [{ required: true, message: 'Password is required', trigger: 'blur' }],
+        confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }]
       },
       dialogPermissionVisible: false,
       dialogPermissionLoading: false,
       permissionProps: {
         children: 'children',
         label: 'name',
-        disabled: 'disabled',
+        disabled: 'disabled'
       },
       permissions: [],
       menuPermissions: [],
@@ -221,30 +337,32 @@ export default {
           role: [],
           user: []
         },
-        rolePermissions: [],
+        rolePermissions: []
       },
       normalizedMenuPermissions: computed(() => {
         let tmp = []
-        resData.currentUser.permissions.role.forEach(permission => {
+        resData.currentUser.permissions.role.forEach((permission) => {
           tmp.push({
             id: permission.id,
             name: permission.name,
-            disabled: true,
+            disabled: true
           })
         })
         const rolePermissions = {
           id: -1, // Just a faked ID
           name: 'Inherited from role',
           disabled: true,
-          children: classifyPermissions(tmp).menu,
+          children: classifyPermissions(tmp).menu
         }
 
-        tmp = resData.menuPermissions.filter(permission => !resData.currentUser.permissions.role.find(p => p.id === permission.id))
+        tmp = resData.menuPermissions.filter(
+          (permission) => !resData.currentUser.permissions.role.find((p) => p.id === permission.id)
+        )
         const userPermissions = {
           id: 0, // Faked ID
           name: 'Extra menus',
           children: tmp,
-          disabled: tmp.length === 0,
+          disabled: tmp.length === 0
         }
 
         return [rolePermissions, userPermissions]
@@ -254,26 +372,28 @@ export default {
           return []
         }
         let tmp = []
-        resData.currentUser.permissions.role.forEach(permission => {
+        resData.currentUser.permissions.role.forEach((permission) => {
           tmp.push({
             id: permission.id,
             name: permission.name,
-            disabled: true,
+            disabled: true
           })
         })
         const rolePermissions = {
           id: -1,
           name: 'Inherited from role',
           disabled: true,
-          children: classifyPermissions(tmp).other,
+          children: classifyPermissions(tmp).other
         }
 
-        tmp = resData.otherPermissions.filter(permission => !resData.currentUser.permissions.role.find(p => p.id === permission.id))
+        tmp = resData.otherPermissions.filter(
+          (permission) => !resData.currentUser.permissions.role.find((p) => p.id === permission.id)
+        )
         const userPermissions = {
           id: 0,
           name: 'Extra permissions',
           children: tmp,
-          disabled: tmp.length === 0,
+          disabled: tmp.length === 0
         }
 
         return [rolePermissions, userPermissions]
@@ -282,32 +402,35 @@ export default {
         if (resData.userPermissions.length === 0) {
           return []
         }
-        const {menu} = classifyPermissions(resData.userPermissions)
+        const { menu } = classifyPermissions(resData.userPermissions)
         return menu
       }),
       userOtherPermissions: computed(() => {
         if (resData.userPermissions.length === 0) {
           return []
         }
-        const {other} = classifyPermissions(resData.userPermissions)
+        const { other } = classifyPermissions(resData.userPermissions)
         return other
       }),
       userPermissions: computed(() => {
         return resData.currentUser.permissions.role.concat(resData.currentUser.permissions.user)
-      }),
+      })
     })
 
     const useUserStore = userStore()
+    // Check if the user has the 'manage user' permission and set table options accordingly
     if (useUserStore.permissions.includes('manage user')) {
       resData.tableOption = {
         slot: true,
         label: t('table.actions'),
         fixed: 'right',
         item_actions: [
-          {name: 'edit-item', type: 'primary', icon: 'EditPen', label: t('table.edit')},
-          {name: 'delete-item', type: 'danger', icon: 'Delete', label: t('table.delete')},
-        ],
+          { name: 'edit-item', type: 'primary', icon: 'EditPen', label: t('table.edit') },
+          { name: 'delete-item', type: 'danger', icon: 'Delete', label: t('table.delete') }
+        ]
       }
+
+      // Add extra action for permission management if the user has 'manage permission' permission
       if (useUserStore.permissions.includes('manage permission')) {
         resData.tableOption.item_actions.push({
           name: 'edit-permission-item',
@@ -318,6 +441,7 @@ export default {
       }
     }
 
+    // Fetch the list of users from the API and update the table data
     const getList = () => {
       resData.loading = true
       userResource.list(resData.params).then((res) => {
@@ -327,6 +451,7 @@ export default {
       })
     }
 
+    // Filter the user list based on the search parameters
     const handleFilter = () => {
       resData.params.page = 1
       getList()
@@ -335,6 +460,7 @@ export default {
       }
     }
 
+    // Set parameters for the user list and trigger a data fetch
     const setParams = (key, value) => {
       if (key !== 'per_page' && key !== 'page') {
         resData.params.page = 1
@@ -343,6 +469,7 @@ export default {
       getList()
     }
     const router = useRouter()
+    // Handle actions for editing, deleting, or managing user permissions
     const tableActions = (action, data) => {
       if (action === 'edit-item') {
         router.push(`/administrator/users/edit/${data.id}`)
@@ -352,30 +479,37 @@ export default {
         ElMessageBox.confirm('This will permanently delete user ' + data.name + '. Continue?', 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
-          type: 'warning',
-        }).then(() => {
-          userResource.destroy(data.id).then(response => {
-            ElMessage({
-              type: 'success',
-              message: 'Delete completed',
-            })
-            handleFilter()
-          }).catch(error => {
-            console.log(error)
-          })
-        }).catch(() => {
-          ElMessage({
-            type: 'info',
-            message: 'Delete canceled',
-          })
+          type: 'warning'
         })
+          .then(() => {
+            userResource
+              .destroy(data.id)
+              .then((response) => {
+                ElMessage({
+                  type: 'success',
+                  message: 'Delete completed'
+                })
+                handleFilter()
+              })
+              .catch((error) => {
+                console.log(error)
+              })
+          })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: 'Delete canceled'
+            })
+          })
       }
     }
 
+    // Show the create user form
     const handleCreate = () => {
       resetNewUser()
       resData.dialogFormVisible = true
     }
+    // Create a new user and save it to the database
     const createUser = (formEl) => {
       if (!formEl) {
         return
@@ -388,23 +522,24 @@ export default {
           }
           resData.userCreating = true
           userResource
-              .store(resData.newUser)
-              .then(response => {
-                ElMessage({
-                  message: 'New user ' + resData.newUser.name + '(' + resData.newUser.email + ') has been created successfully.',
-                  type: 'success',
-                  duration: 5 * 1000,
-                })
-                resetNewUser()
-                resData.dialogFormVisible = false
-                handleFilter()
+            .store(resData.newUser)
+            .then((response) => {
+              ElMessage({
+                message:
+                  'New user ' + resData.newUser.name + '(' + resData.newUser.email + ') has been created successfully.',
+                type: 'success',
+                duration: 5 * 1000
               })
-              .catch(error => {
-                console.log(error)
-              })
-              .finally(() => {
-                resData.userCreating = false
-              })
+              resetNewUser()
+              resData.dialogFormVisible = false
+              handleFilter()
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+            .finally(() => {
+              resData.userCreating = false
+            })
         } else {
           console.log('error submit!!')
           return false
@@ -413,11 +548,11 @@ export default {
     }
     const resetNewUser = () => {
       resData.newUser = {
-        role: 'user',
+        role: 'user'
       }
     }
 
-    const getPermissions = async() => {
+    const getPermissions = async () => {
       const { data } = await permissionResource.list({})
       const { all, menu, other } = classifyPermissions(data)
       resData.permissions = all
@@ -429,11 +564,11 @@ export default {
       resData.currentUserId = userData.id
       resData.dialogPermissionLoading = true
       resData.dialogPermissionVisible = true
-      const {data} = await userResource.permissions(userData.id)
+      const { data } = await userResource.permissions(userData.id)
       resData.currentUser = {
         id: userData.id,
         name: userData.name,
-        permissions: data,
+        permissions: data
       }
       resData.dialogPermissionLoading = false
       nextTick(() => {
@@ -442,13 +577,13 @@ export default {
       })
     }
     const permissionKeys = (permissions) => {
-      return permissions.map(permssion => permssion.id)
+      return permissions.map((permssion) => permssion.id)
     }
     const classifyPermissions = (permissions) => {
       const all = []
       const menu = []
       const other = []
-      permissions.forEach(permission => {
+      permissions.forEach((permission) => {
         const permissionName = permission.name
         all.push(permission)
         if (permissionName.startsWith('view menu')) {
@@ -457,7 +592,7 @@ export default {
           other.push(normalizePermission(permission))
         }
       })
-      return {all: all, menu: menu, other: other}
+      return { all: all, menu: menu, other: other }
     }
 
     const normalizeMenuPermission = (permission) => {
@@ -470,7 +605,7 @@ export default {
 
     const normalizePermission = (permission) => {
       const disabled = permission.disabled || permission.name === 'manage permission'
-      return {id: permission.id, name: uppercaseFirst(permission.name), disabled: disabled}
+      return { id: permission.id, name: uppercaseFirst(permission.name), disabled: disabled }
     }
 
     const confirmPermission = () => {
@@ -479,11 +614,11 @@ export default {
       const checkedPermissions = checkedMenu.concat(checkedOther)
       resData.dialogPermissionLoading = true
 
-      userResource.updatePermission(resData.currentUserId, {permissions: checkedPermissions}).then(response => {
+      userResource.updatePermission(resData.currentUserId, { permissions: checkedPermissions }).then((response) => {
         ElMessage({
           message: 'Permissions has been updated successfully',
           type: 'success',
-          duration: 5 * 1000,
+          duration: 5 * 1000
         })
         resData.dialogPermissionLoading = false
         resData.dialogPermissionVisible = false
@@ -511,7 +646,8 @@ export default {
       createUser,
       permissionKeys,
       confirmPermission,
-      Search, Plus,
+      Search,
+      Plus
     }
   }
 }

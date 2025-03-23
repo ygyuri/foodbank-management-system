@@ -2,7 +2,7 @@ export default {
   /**
    * @type {String}
    */
-  title: 'Laravel Vue Admin',
+  title: 'FBHMP',
   theme: '#1890ff',
 
   /**
@@ -80,5 +80,5 @@ export default {
    * @type {boolean} true | false
    * @description Whether show the drop-down
    */
-  ShowDropDown: true,
-};
+  ShowDropDown: true
+}

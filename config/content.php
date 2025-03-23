@@ -17,7 +17,7 @@ return [
 
     // Meta
     'meta' => [
-        'keywords' => 'Laravel Vue Admin,laravel,vuejs',
+        'keywords' => 'FBHMP,laravel,vuejs',
         'description' => 'Talk is cheap. Show me the code.'
     ],
 
@@ -31,8 +31,8 @@ return [
     'footer' => [
         'github' => [
             'open' => true,
-            'url'  => 'https://github.com/trumanwong',
+            'url'  => 'https://github.com/ygyuri',
         ],
-        'meta' => '© Laravel Vue Admin 2022. Powered By Truman',
+        'meta' => '© FBHMP 2025. Powered By YG',
     ],
 ];

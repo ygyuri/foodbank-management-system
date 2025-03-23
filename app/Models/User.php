@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class User
@@ -23,9 +23,21 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static User create(array $user)
  * @package App
  */
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|User donors()
+ * @method static \Illuminate\Database\Eloquent\Builder|User foodbanks()
+ * @method static \Illuminate\Database\Eloquent\Builder|User recipients()
+ * @method static \Illuminate\Database\Eloquent\Builder|User admins()
+ * @method static \Illuminate\Database\Eloquent\Builder|User pendingFoodbanks()
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, Filterable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use HasRoles;
+    use Filterable;
 
     /**
      * Set permissions guard to API by default
@@ -35,11 +47,12 @@ class User extends Authenticatable
 
     /**
      * Sex map
-     * */
-    const sexMap = [
-        0 => 'Male',
-        1 => 'Female'
+     */
+    public const SEXMAP = [
+    'M' => 'Male',
+    'F' => 'Female'
     ];
+
 
     /**
      * The attributes that should be mutated to dates.
@@ -54,7 +67,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'status', 'sex', 'birthday', 'description'
+        'name', 'email', 'password', 'status', 'sex', 'birthday', 'description',
+        'phone', 'role', 'profile_picture', 'location', 'address',
+        'organization_name', 'recipient_type', 'donor_type', 'notes'
     ];
 
     /**
@@ -71,6 +86,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
         'updated_at',
         'deleted_at'
     ];
@@ -82,6 +98,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -97,7 +114,7 @@ class User extends Authenticatable
 
     public function getSexFormatAttribute()
     {
-        return self::sexMap[$this->sex];
+        return self::SEXMAP[$this->sex] ?? 'Unknown';
     }
 
     public function getAgeAttribute()
@@ -109,31 +126,147 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user has a permission
-     * @param String
+     * Check if the user has a specific role.
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role || $this->hasPermissionTo($role);
+    }
+
+    /**
+     * Check if user has a permission.
+     *
+     * @param String $permission
      * @return bool
      */
     public function hasPermission($permission): bool
     {
+        // Loop through each of the roles associated with the user
         foreach ($this->roles as $role) {
-            if (in_array($permission, $role->permissions->pluck('name')->toArray())) {
+            // Check if any permission within the role matches the provided permission
+            if ($role->hasPermissionTo($permission)) {
                 return true;
             }
         }
         return false;
     }
 
+       // Assuming a user can have multiple donation requests
+    public function donationRequests()
+    {
+        return $this->hasMany(DonationRequest::class, 'foodbank_id'); // Adjust foreign key if needed
+    }
+
+    public function donations()
+    {
+        return $this->hasMany(Donation::class, 'foodbank_id'); // Adjust foreign key if needed
+    }
+
+    public function requestsFb()
+    {
+         return $this->hasMany(RequestFB::class, 'recipient_id');
+    }
+
+
     /**
+     * Check if the user is an Admin.
+     *
      * @return bool
      */
     public function isAdmin(): bool
     {
-        foreach ($this->roles as $role) {
-            if ($role->isAdmin()) {
-                return true;
-            }
-        }
+        return $this->hasRole('admin') || $this->roles()->where('name', 'admin')->exists();
+    }
 
-        return false;
+    /**
+     * Scope a query to only include users of a given role.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $role
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByRole($query, string $role)
+    {
+        return $query->where('role', $role);
+    }
+
+    /**
+     * Scope a query to only include donors.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDonors($query)
+    {
+        return $query->where('role', 'donor');
+    }
+
+    /**
+     * Scope a query to only include foodbanks.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFoodbanks($query)
+    {
+        return $query->where('role', 'foodbank');
+    }
+
+    /**
+     * Scope a query to only include recipients.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRecipients($query)
+    {
+        return $query->where('role', 'recipient');
+    }
+
+    /**
+     * Scope a query to only include admins.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    public function scopePendingFoodbanks($query)
+    {
+        return $query->where('role', 'foodbank')->where('status', 'pending');
+    }
+
+    public function isDonor(): bool
+    {
+        return $this->role === 'donor';
+    }
+
+    public function isFoodbank(): bool
+    {
+        return $this->role === 'foodbank';
+    }
+
+    public function isRecipient(): bool
+    {
+        return $this->role === 'recipient';
+    }
+
+    // In User model
+    public static function getHistoricalData($role, $period)
+    {
+        return self::where('role', $role)
+                ->where('created_at', '>=', now()->subDays($period))
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get([
+                    DB::raw('DATE(created_at) as date'),
+                    DB::raw('COUNT(*) as count'),
+                ]);
     }
 }

@@ -1,44 +1,31 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-top:40px;">
+    <el-card class="box-card" style="margin-top: 40px">
       <div slot="header" class="clearfix">
-        <icon class-name="translate"/>
-        <span style="margin-left:10px;">{{ $t('i18nView.title') }}</span>
+        <icon class-name="translate" />
+        <span style="margin-left: 10px">{{ $t('i18nView.title') }}</span>
       </div>
       <div>
         <el-radio-group v-model="lang" size="small">
-          <el-radio label="vi" border>
-            Tiếng Việt
-          </el-radio>
-          <el-radio label="en" border>
-            English
-          </el-radio>
-          <el-radio label="ru" border>
-            Русский
-          </el-radio>
-          <el-radio label="zh" border>
-            简体中文
-          </el-radio>
+          <el-radio label="vi" border>Tiếng Việt</el-radio>
+          <el-radio label="en" border>English</el-radio>
+          <el-radio label="ru" border>Русский</el-radio>
+          <el-radio label="zh" border>简体中文</el-radio>
         </el-radio-group>
-        <el-tag style="margin-top:15px;display:block;" type="info">
+        <el-tag style="margin-top: 15px; display: block" type="info">
           {{ $t('i18nView.note') }}
         </el-tag>
       </div>
     </el-card>
 
-    <el-row :gutter="20" style="margin:100px 15px 50px;">
+    <el-row :gutter="20" style="margin: 100px 15px 50px">
       <el-col :span="12" :xs="24">
         <div class="block">
-          <el-date-picker v-model="date" :placeholder="$t('i18nView.datePlaceholder')" type="date"/>
+          <el-date-picker v-model="date" :placeholder="$t('i18nView.datePlaceholder')" type="date" />
         </div>
         <div class="block">
           <el-select v-model="value" :placeholder="$t('i18nView.selectPlaceholder')">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </div>
         <div class="block">
@@ -64,9 +51,9 @@
       </el-col>
       <el-col :span="12" :xs="24">
         <el-table :data="tableData" fit highlight-current-row border style="width: 100%">
-          <el-table-column :label="$t('i18nView.tableName')" prop="name" width="100" align="center"/>
-          <el-table-column :label="$t('i18nView.tableDate')" prop="date" width="120" align="center"/>
-          <el-table-column :label="$t('i18nView.tableAddress')" prop="address"/>
+          <el-table-column :label="$t('i18nView.tableName')" prop="name" width="100" align="center" />
+          <el-table-column :label="$t('i18nView.tableDate')" prop="date" width="120" align="center" />
+          <el-table-column :label="$t('i18nView.tableAddress')" prop="address" />
         </el-table>
       </el-col>
     </el-row>
@@ -74,9 +61,9 @@
 </template>
 
 <script>
-import local from './local';
+import local from './local'
 
-const viewName = 'i18nView';
+const viewName = 'i18nView'
 
 export default {
   name: 'I18n',
@@ -87,72 +74,72 @@ export default {
         {
           date: '2016-05-03',
           name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
+          address: 'No. 189, Grove St, Los Angeles'
         },
         {
           date: '2016-05-02',
           name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
+          address: 'No. 189, Grove St, Los Angeles'
         },
         {
           date: '2016-05-04',
           name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
+          address: 'No. 189, Grove St, Los Angeles'
         },
         {
           date: '2016-05-01',
           name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles',
-        },
+          address: 'No. 189, Grove St, Los Angeles'
+        }
       ],
       options: [],
-      value: '',
-    };
+      value: ''
+    }
   },
   computed: {
     lang: {
       get() {
-        return this.$store.state.app.language;
+        return this.$store.state.app.language
       },
       set(lang) {
-        this.$i18n.locale = lang;
-        this.$store.dispatch('app/setLanguage', lang);
-      },
-    },
+        this.$i18n.locale = lang
+        this.$store.dispatch('app/setLanguage', lang)
+      }
+    }
   },
   watch: {
     lang() {
-      this.setOptions();
-    },
+      this.setOptions()
+    }
   },
   created() {
     if (!this.$i18n.getLocaleMessage('en')[viewName]) {
-      this.$i18n.mergeLocaleMessage('en', local.en);
-      this.$i18n.mergeLocaleMessage('ru', local.ru);
-      this.$i18n.mergeLocaleMessage('zh', local.zh);
-      this.$i18n.mergeLocaleMessage('vi', local.vi);
+      this.$i18n.mergeLocaleMessage('en', local.en)
+      this.$i18n.mergeLocaleMessage('ru', local.ru)
+      this.$i18n.mergeLocaleMessage('zh', local.zh)
+      this.$i18n.mergeLocaleMessage('vi', local.vi)
     }
-    this.setOptions(); // set default select options
+    this.setOptions() // set default select options
   },
   methods: {
     setOptions() {
       this.options = [
         {
           value: '1',
-          label: this.$t('i18nView.one'),
+          label: this.$t('i18nView.one')
         },
         {
           value: '2',
-          label: this.$t('i18nView.two'),
+          label: this.$t('i18nView.two')
         },
         {
           value: '3',
-          label: this.$t('i18nView.three'),
-        },
-      ];
-    },
-  },
-};
+          label: this.$t('i18nView.three')
+        }
+      ]
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-import {userStore} from '@/store/user';
+import { userStore } from '@/store/user'
 
 /**
  * @param {Array} value
@@ -7,14 +7,14 @@ import {userStore} from '@/store/user';
  */
 export default function checkRole(value) {
   if (value && value instanceof Array && value.length > 0) {
-    const roles = userStore.roles;
-    const requiredRoles = value;
+    const roles = userStore.roles
+    const requiredRoles = value
 
-    return roles.some(role => {
-      return requiredRoles.includes(role);
-    });
+    return roles.some((role) => {
+      return requiredRoles.includes(role)
+    })
   } else {
-    console.error(`Need roles! Like v-role="['admin','editor']"`);
-    return false;
+    console.error(`Need roles! Like v-role="['admin','editor']"`)
+    return false
   }
 }

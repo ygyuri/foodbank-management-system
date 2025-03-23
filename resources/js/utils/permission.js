@@ -1,4 +1,4 @@
-import {userStore} from '@/store/user';
+import { userStore } from '@/store/user'
 
 /**
  * @param {Array} value
@@ -10,8 +10,11 @@ export default function checkPermission(value) {
   if (value && value instanceof Array && value.length > 0) {
     const permissions = useUserStore.permissions
     const requiredPermissions = value
+    console.log('User Permissions:', permissions)
+    console.log('Required Permissions:', requiredPermissions)
 
-    return permissions.some(permission => {
+    return permissions.some((permission) => {
+      console.log('Checking permission:', permission)
       return requiredPermissions.includes(permission)
     })
   } else {

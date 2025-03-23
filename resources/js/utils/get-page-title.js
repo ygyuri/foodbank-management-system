@@ -1,13 +1,13 @@
-import defaultSettings from '@/settings';
-import i18n from '@/lang';
+import defaultSettings from '@/settings'
+import i18n from '@/lang'
 
-const title = defaultSettings.title || 'Laravel Vue Admin';
+const title = defaultSettings.title || 'FBHMP'
 
 export default function getPageTitle(key) {
-  const hasKey = i18n.global.te(`route.${key}`);
+  const hasKey = i18n.global.te(`route.${key}`)
   if (hasKey) {
-    const pageName = i18n.global.t(`route.${key}`);
-    return `${pageName} - ${title}`;
+    const pageName = i18n.global.t(`route.${key}`)
+    return `${pageName} - ${title}`
   }
-  return `${title}`;
+  return `${title}`
 }

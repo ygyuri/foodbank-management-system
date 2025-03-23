@@ -8,7 +8,7 @@ const errorRoutes = {
   name: 'ErrorPages',
   meta: {
     title: 'errorPages',
-    icon: '404',
+    icon: '404'
   },
   hidden: true,
   children: [
@@ -16,15 +16,15 @@ const errorRoutes = {
       path: '401',
       component: () => import('@/views/error-page/401.vue'),
       name: 'Page401',
-      meta: { title: 'page401', noCache: true },
+      meta: { title: 'page401', noCache: true }
     },
     {
       path: '404',
       component: () => import('@/views/error-page/404.vue'),
       name: 'Page404',
-      meta: { title: 'page404', noCache: true },
-    },
-  ],
+      meta: { title: 'page404', noCache: true }
+    }
+  ]
 }
 
 export default errorRoutes

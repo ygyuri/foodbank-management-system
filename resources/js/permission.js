@@ -1,13 +1,13 @@
 import router from './router'
-import {ElMessage} from 'element-plus'
+import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import {isLogged} from '@/utils/auth'
+import { isLogged } from '@/utils/auth'
 import getPageTitle from '@/utils/get-page-title'
-import {userStore} from "@/store/user"
-import {permissionStore} from "@/store/permission"
+import { userStore } from '@/store/user'
+import { permissionStore } from '@/store/permission'
 
-NProgress.configure({showSpinner: false}) // NProgress Configuration
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
@@ -25,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
   if (isUserLogged) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
-      next({path: '/'})
+      next({ path: '/' })
       NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
@@ -36,14 +36,14 @@ router.beforeEach(async (to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['manager','editor']
-          const {roles, permissions} = await useUserStore.getInfo()
+          const { roles, permissions } = await useUserStore.getInfo()
 
           // generate accessible routes map based on roles
           const accessRoutes = await usePermissionStore.generateRoutes(roles, permissions)
           accessRoutes.forEach((item) => {
             router.addRoute(item)
           })
-          next({...to, replace: true})
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await useUserStore.resetToken()

@@ -9,7 +9,7 @@ class UserResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function toArray($request)
@@ -25,18 +25,20 @@ class UserResource extends JsonResource
             'age' => $this->age,
             'birthday' => $this->birthday,
             'description' => $this->description,
-            'roles' => array_map(
-                function ($role) {
-                    return $role['name'];
-                },
-                $this->roles->toArray()
-            ),
-            'permissions' => array_map(
-                function ($permission) {
-                    return $permission['name'];
-                },
-                $this->getAllPermissions()->toArray()
-            )
+            'phone' => $this->phone,
+            'location' => $this->location,
+            'address' => $this->address,
+            'organization_name' => $this->organization_name,
+            'recipient_type' => $this->recipient_type,
+            'donor_type' => $this->donor_type,
+            'notes' => $this->notes,
+
+            // Extract role names from the roles relationship
+            'roles' => $this->role ? [$this->role] : [], // Convert single string to an array
+
+
+            // Extract permission names using Laravel's helper method
+            'permissions' => $this->getAllPermissions()->pluck('name'),
         ];
     }
 }

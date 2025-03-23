@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
-import {getLanguage} from '@/lang'
-import {defineStore} from "pinia"
+import { getLanguage } from '@/lang'
+import { defineStore } from 'pinia'
 import defaultSettings from '../settings'
 
 export const appStore = defineStore('app', {
@@ -8,7 +8,7 @@ export const appStore = defineStore('app', {
     return {
       sidebar: {
         opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
-        withoutAnimation: false,
+        withoutAnimation: false
       },
       device: 'desktop',
       language: getLanguage(),
@@ -21,12 +21,12 @@ export const appStore = defineStore('app', {
   actions: {
     toggleSideBar() {
       this.$patch((state) => {
-        state.sidebar.opened = !state.sidebar.opened;
-        state.sidebar.withoutAnimation = false;
+        state.sidebar.opened = !state.sidebar.opened
+        state.sidebar.withoutAnimation = false
         if (state.sidebar.opened) {
-          Cookies.set('sidebarStatus', 1);
+          Cookies.set('sidebarStatus', 1)
         } else {
-          Cookies.set('sidebarStatus', 0);
+          Cookies.set('sidebarStatus', 0)
         }
       })
     },
@@ -40,7 +40,7 @@ export const appStore = defineStore('app', {
       this.$patch((state) => {
         Cookies.set('sidebarStatus', 0)
         state.sidebar.opened = false
-        state.sidebar.withoutAnimation = withoutAnimation;
+        state.sidebar.withoutAnimation = withoutAnimation
       })
     },
     toggleDevice(device) {
@@ -103,7 +103,7 @@ export const appStore = defineStore('app', {
     },
     changeSetting(data) {
       this.$patch((state) => {
-        state.settings = {...state.settings, ...data}
+        state.settings = { ...state.settings, ...data }
       })
     }
   }

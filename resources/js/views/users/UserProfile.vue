@@ -18,8 +18,8 @@ import Resource from '@/api/resource'
 import UserBio from './components/UserBio.vue'
 import UserCard from './components/UserCard.vue'
 import UserActivity from './components/UserActivity.vue'
-import {userStore} from "../../store/user"
-import {getCurrentInstance, onMounted, reactive, toRefs} from "vue"
+import { userStore } from '../../store/user'
+import { getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
 
 const userResource = new Resource('users')
 export default {
@@ -30,7 +30,7 @@ export default {
       user: {}
     })
     const useUserStore = userStore()
-    const {proxy} = getCurrentInstance()
+    const { proxy } = getCurrentInstance()
     const getUser = async (id) => {
       const { data } = await userResource.get(id)
       resData.user = data
@@ -48,6 +48,6 @@ export default {
     return {
       ...toRefs(resData)
     }
-  },
+  }
 }
 </script>

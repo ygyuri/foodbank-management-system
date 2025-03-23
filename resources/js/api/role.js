@@ -8,10 +8,18 @@ class RoleResource extends Resource {
 
   permissions(id) {
     return request({
-      url: '/' + this.uri + '/' + id + '/permissions',
+      url: `/${this.uri}/${id}/permissions`,
       method: 'get',
+    });
+  }
+
+  updatePermissions(id, permissions) {
+    return request({
+      url: `/${this.uri}/${id}`,
+      method: 'put',
+      data: { permissions },
     });
   }
 }
 
-export { RoleResource as default };
+export default new RoleResource();

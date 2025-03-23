@@ -1,17 +1,27 @@
 <template>
   <div class="app-container scroll-y">
-    <custom-table :table-data="tableData" :table-column="basicColumn" :table-option="tableOption"
-                  :pagination="pagination" :paginate="true" :page-sizes="pageSizes" :loading="loading"
-                  @table-action="tableActions" @set-params="setParams">
+    <custom-table
+      :table-data="tableData"
+      :table-column="basicColumn"
+      :table-option="tableOption"
+      :pagination="pagination"
+      :paginate="true"
+      :page-sizes="pageSizes"
+      :loading="loading"
+      @table-action="tableActions"
+      @set-params="setParams"
+    >
       <template #name="scope">
         <span>{{ uppercaseFirst(scope.row.name) }}</span>
       </template>
       <template #table_options="scope">
         <div v-if="scope.row.name !== 'admin'">
-          <el-button v-for="(action, index) in tableOption.item_actions"
-                     :type="action.type ? action.type : 'primary'"
-                     :size="action.size ? action.size : ''"
-                     @click="tableActions(action.name, scope.row)">
+          <el-button
+            v-for="(action, index) in tableOption.item_actions"
+            :type="action.type ? action.type : 'primary'"
+            :size="action.size ? action.size : ''"
+            @click="tableActions(action.name, scope.row)"
+          >
             <el-svg-item :el-svg-name="action.icon" :title="action.label"></el-svg-item>
           </el-button>
         </div>
@@ -24,25 +34,37 @@
           <div class="block">
             <el-form :model="currentRole" label-width="80px" label-position="top">
               <el-form-item label="Menus">
-                <el-tree ref="refMenuPermissions" :data="menuPermissions"
-                         :default-checked-keys="permissionKeys(roleMenuPermissions)" :props="permissionProps"
-                         show-checkbox node-key="id" class="permission-tree"/>
+                <el-tree
+                  ref="refMenuPermissions"
+                  :data="menuPermissions"
+                  :default-checked-keys="permissionKeys(roleMenuPermissions)"
+                  :props="permissionProps"
+                  show-checkbox
+                  node-key="id"
+                  class="permission-tree"
+                />
               </el-form-item>
             </el-form>
           </div>
           <div class="block">
             <el-form :model="currentRole" label-width="80px" label-position="top">
               <el-form-item label="Permissions">
-                <el-tree ref="refOtherPermissions" :data="otherPermissions"
-                         :default-checked-keys="permissionKeys(roleOtherPermissions)" :props="permissionProps"
-                         show-checkbox node-key="id" class="permission-tree"/>
+                <el-tree
+                  ref="refOtherPermissions"
+                  :data="otherPermissions"
+                  :default-checked-keys="permissionKeys(roleOtherPermissions)"
+                  :props="permissionProps"
+                  show-checkbox
+                  node-key="id"
+                  class="permission-tree"
+                />
               </el-form-item>
             </el-form>
           </div>
-          <div class="clear-left"/>
+          <div class="clear-left" />
         </div>
-        <div style="text-align:right;">
-          <el-button type="danger" @click="dialogVisible=false">
+        <div style="text-align: right">
+          <el-button type="danger" @click="dialogVisible = false">
             {{ t('permission.cancel') }}
           </el-button>
           <el-button type="primary" @click="confirmPermission">
@@ -56,20 +78,20 @@
 
 <script>
 import CustomTable from '@/components/CustomTable.vue'
-import ElSvgItem from "@/components/Item/ElSvgItem.vue"
+import ElSvgItem from '@/components/Item/ElSvgItem.vue'
 import Resource from '@/api/resource'
 import RoleResource from '@/api/role'
 import checkPermission from '@/utils/permission'
-import {useI18n} from "vue-i18n"
-import {uppercaseFirst} from "../../utils"
-import {userStore} from "../../store/user"
-import {ElMessage} from "element-plus" // Permission checking
+import { useI18n } from 'vue-i18n'
+import { uppercaseFirst } from '../../utils'
+import { userStore } from '../../store/user'
+import { ElMessage } from 'element-plus' // Permission checking
 
 export default {
   name: 'RoleList',
-  components: {CustomTable, ElSvgItem},
+  components: { CustomTable, ElSvgItem },
   setup() {
-    const {t} = useI18n({useScope: 'global'})
+    const { t } = useI18n({ useScope: 'global' })
     const roleResource = new RoleResource()
     const permissionResource = new Resource('permissions')
     const useUserStore = userStore()
@@ -77,14 +99,17 @@ export default {
     const refOtherPermissions = ref(null)
 
     const resData = reactive({
-      basicColumn: [{
-        prop: 'name',
-        label: t('roles.name'),
-        width: '150'
-      }, {
-        prop: 'description',
-        label: t('table.description'),
-      }],
+      basicColumn: [
+        {
+          prop: 'name',
+          label: t('roles.name'),
+          width: '150'
+        },
+        {
+          prop: 'description',
+          label: t('table.description')
+        }
+      ],
       tableOption: {},
       tableData: [],
       loading: true,
@@ -97,7 +122,7 @@ export default {
         page: 1,
         per_page: 10,
         keyword: '',
-        role: '',
+        role: ''
       },
       dialogLoading: false,
       dialogVisible: false,
@@ -107,7 +132,7 @@ export default {
       permissionProps: {
         children: 'children',
         label: 'name',
-        disabled: 'disabled',
+        disabled: 'disabled'
       },
       currentRole: {},
       roleMenuPermissions: computed(() => {
@@ -121,7 +146,7 @@ export default {
           return []
         }
         return classifyPermissions(resData.currentRole.permissions).other
-      }),
+      })
     })
 
     if (useUserStore.permissions.includes('manage user')) {
@@ -129,9 +154,7 @@ export default {
         slot: true,
         label: t('table.actions'),
         fixed: 'right',
-        item_actions: [
-          {name: 'edit-item', type: 'primary', icon: 'EditPen', label: t('permission.editPermission')},
-        ],
+        item_actions: [{ name: 'edit-item', type: 'primary', icon: 'EditPen', label: t('permission.editPermission') }]
       }
     }
     const getRoles = async () => {
@@ -153,8 +176,8 @@ export default {
     }
 
     const getPermissions = async () => {
-      const {data} = await permissionResource.list({})
-      const {all, menu, other} = classifyPermissions(data)
+      const { data } = await permissionResource.list({})
+      const { all, menu, other } = classifyPermissions(data)
       resData.permissions = all
       resData.menuPermissions = menu
       resData.otherPermissions = other
@@ -164,7 +187,7 @@ export default {
       const all = []
       const menu = []
       const other = []
-      permissions.forEach(permission => {
+      permissions.forEach((permission) => {
         const permissionName = permission.name
         all.push(permission)
         if (permissionName.startsWith('view menu')) {
@@ -173,11 +196,11 @@ export default {
           other.push(normalizePermission(permission))
         }
       })
-      return {all, menu, other}
+      return { all, menu, other }
     }
 
     const normalizeMenuPermission = (permission) => {
-      return {id: permission.id, name: uppercaseFirst(permission.name.substring(10))}
+      return { id: permission.id, name: uppercaseFirst(permission.name.substring(10)) }
     }
 
     const normalizePermission = (permission) => {
@@ -189,7 +212,7 @@ export default {
     }
 
     const permissionKeys = (permissions) => {
-      return permissions.map(permssion => permssion.id)
+      return permissions.map((permssion) => permssion.id)
     }
 
     const handleEditPermissions = (data) => {
@@ -207,11 +230,11 @@ export default {
       const checkedPermissions = checkedMenu.concat(checkedOther)
       resData.dialogLoading = true
 
-      roleResource.update(resData.currentRole.id, {permissions: checkedPermissions}).then(response => {
+      roleResource.update(resData.currentRole.id, { permissions: checkedPermissions }).then((response) => {
         ElMessage({
           message: 'Permissions has been updated successfully',
           type: 'success',
-          duration: 5 * 1000,
+          duration: 5 * 1000
         })
         resData.dialogLoading = false
         resData.dialogVisible = false
@@ -245,7 +268,7 @@ export default {
       tableActions,
       checkPermission
     }
-  },
+  }
 }
 </script>
 

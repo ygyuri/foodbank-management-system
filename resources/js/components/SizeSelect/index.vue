@@ -1,15 +1,15 @@
 <template>
   <el-dropdown id="size-select" trigger="click" type="primary" @command="handleSetSize">
     <div class="pl-1 pr-1">
-        <icon class-name="fonts" class="nav-svg-icon"/>
+      <icon class-name="fonts" class="nav-svg-icon" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
-            v-for="item in sizeOptions"
-            :key="item.value"
-            :command="item.value"
-            :disabled="size === item.value"
+          v-for="item in sizeOptions"
+          :key="item.value"
+          :command="item.value"
+          :disabled="size === item.value"
         >
           <h3 class="pt-1 pb-1 font-sizePx14">{{ item.label }}</h3>
         </el-dropdown-item>
@@ -19,14 +19,14 @@
 </template>
 
 <script setup>
-import {computed, reactive, toRefs} from 'vue'
+import { computed, reactive, toRefs } from 'vue'
 import setting from '@/settings'
 
 const state = reactive({
   sizeOptions: [
-    {label: 'Large ', value: 'large'},
-    {label: 'Default ', value: 'default'},
-    {label: 'Small', value: 'small'}
+    { label: 'Large ', value: 'large' },
+    { label: 'Default ', value: 'default' },
+    { label: 'Small', value: 'small' }
   ]
 })
 
@@ -39,6 +39,5 @@ const handleSetSize = (size) => {
   location.reload()
 }
 // 导出属性到页面中使用
-let {sizeOptions} = toRefs(state)
+let { sizeOptions } = toRefs(state)
 </script>
-

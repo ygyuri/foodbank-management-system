@@ -1,4 +1,3 @@
-
 export default {
   en: {
     i18nView: {
@@ -17,8 +16,8 @@ export default {
       danger: 'danger',
       one: 'One',
       two: 'Two',
-      three: 'Three',
-    },
+      three: 'Three'
+    }
   },
   ru: {
     i18nView: {
@@ -37,8 +36,8 @@ export default {
       danger: 'danger',
       one: 'Один',
       two: 'Два',
-      three: 'Три',
-    },
+      three: 'Три'
+    }
   },
   vi: {
     i18nView: {
@@ -57,8 +56,8 @@ export default {
       danger: 'nguy hiểm',
       one: 'Một',
       two: 'Hai',
-      three: 'Ba',
-    },
+      three: 'Ba'
+    }
   },
   zh: {
     i18nView: {
@@ -77,7 +76,7 @@ export default {
       danger: '危险按钮',
       one: '一',
       two: '二',
-      three: '三',
-    },
-  },
-};
+      three: '三'
+    }
+  }
+}

@@ -16,7 +16,7 @@ export default {
     page404: '404',
     administrator: 'Administrator',
     users: 'Users',
-    userProfile: 'User Profile',
+    userProfile: 'User Profile'
   },
   navbar: {
     logOut: 'Log Out',
@@ -47,7 +47,7 @@ export default {
     tips: 'In some cases it is not suitable to use v-role/v-permission, such as element Tab component or el-table-column and other asynchronous rendering dom cases which can only be achieved by manually setting the v-if with checkRole or/and checkPermission.',
     delete: 'Delete',
     confirm: 'Confirm',
-    cancel: 'Cancel',
+    cancel: 'Cancel'
   },
   table: {
     description: 'Description',
@@ -74,20 +74,20 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm',
+    confirm: 'Confirm'
   },
   tagsView: {
     refresh: 'Refresh',
     close: 'Close',
     closeOthers: 'Close Others',
-    closeAll: 'Close All',
+    closeAll: 'Close All'
   },
   settings: {
     title: 'Page style setting',
     theme: 'Theme Color',
     tagsView: 'Open Tags-View',
     fixedHeader: 'Fixed Header',
-    sidebarLogo: 'Sidebar Logo',
+    sidebarLogo: 'Sidebar Logo'
   },
   user: {
     role: 'Role',
@@ -114,7 +114,7 @@ export default {
       manager: 'Manager. Have access and permission to most of pages except permission page.',
       editor: 'Editor. Have access to most of pages, full permission with articles and related resources.',
       user: 'Normal user. Have access to some pages',
-      visitor: 'Visitor. Have access to static pages, should not have any writable permission',
-    },
-  },
-};
+      visitor: 'Visitor. Have access to static pages, should not have any writable permission'
+    }
+  }
+}

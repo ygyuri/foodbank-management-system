@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   laravel:
@@ -10,7 +10,7 @@ services:
       - ./:/var/www
       - .env.docker:/var/www/.env
     ports:
-      - "8000:8000"
+      - '8000:8000'
 
     depends_on:
       - mysql
@@ -21,13 +21,13 @@ services:
     container_name: redis7.0
     restart: always
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
   mysql:
     image: mysql:8.0.29
     container_name: mysql8.0.29
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - ./docker/mysql:/var/lib/mysql
     environment:
@@ -35,4 +35,3 @@ services:
       MYSQL_USER: laravel-vue-admin
       MYSQL_PASSWORD: laravel-vue-admin
       MYSQL_ROOT_PASSWORD: laravel-vue-admin
-

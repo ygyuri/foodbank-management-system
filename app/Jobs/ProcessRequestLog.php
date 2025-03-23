@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class ProcessRequestLog implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private string $ip;
 

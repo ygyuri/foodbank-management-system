@@ -129,6 +129,6 @@
   }
 }
 
-.el-button [class*=el-icon]+span {
+.el-button [class*='el-icon'] + span {
   margin-left: 5px;
 }

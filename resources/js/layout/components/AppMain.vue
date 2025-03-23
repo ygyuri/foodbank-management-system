@@ -20,7 +20,7 @@ import { appStore } from '@/store/app'
 import getPageTitle from '@/utils/get-page-title'
 import i18n from '@/utils/i18n'
 
-const {generateTitle} = i18n()
+const { generateTitle } = i18n()
 const route = useRoute()
 const useAppStore = appStore()
 const settings = computed(() => {

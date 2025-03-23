@@ -3,54 +3,65 @@
     <div class="login-container">
       <div class="login-image">
         <div class="photo-credit">
-          <span>Powered by TrumanWong</span>
+          <span>Powered by Yuri Gideon</span>
         </div>
       </div>
       <div class="login-content">
-        <el-form ref="ruleFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
-                 label-position="left">
+        <el-form
+          ref="ruleFormRef"
+          :model="loginForm"
+          :rules="loginRules"
+          class="login-form"
+          auto-complete="on"
+          label-position="left"
+        >
           <div class="title-wrap">
             <h3 class="title">
-              <img
-                  class="logo"
-                  alt="Laravel Vue Admin"
-                  :src="logo"
-              >
+              <img class="logo" alt="FBHMP" :src="logo" />
               {{ $t('login.title') }}
-              <lang-select class="set-language"/>
+              <lang-select class="set-language" />
             </h3>
           </div>
           <el-form-item prop="email">
             <span class="svg-container">
-              <icon class-name="person-fill"/>
+              <icon class-name="person-fill" />
             </span>
-            <el-input v-model="loginForm.email" name="email" type="text" auto-complete="on"
-                      :placeholder="$t('login.email')"/>
+            <el-input
+              v-model="loginForm.email"
+              name="email"
+              type="text"
+              auto-complete="on"
+              :placeholder="$t('login.email')"
+            />
           </el-form-item>
           <el-form-item prop="password">
             <span class="svg-container">
-              <icon class-name="shield-lock"/>
+              <icon class-name="shield-lock" />
             </span>
             <el-input
-                v-model="loginForm.password"
-                name="password"
-                auto-complete="on"
-                placeholder="password"
-                :type="pwdType"
-                @keyup.enter.native="handleLogin(ruleFormRef)"
+              v-model="loginForm.password"
+              name="password"
+              auto-complete="on"
+              placeholder="password"
+              :type="pwdType"
+              @keyup.enter.native="handleLogin(ruleFormRef)"
             />
             <span class="show-pwd" @click="showPwd">
-              <icon :class-name="pwdType === 'password' ? 'eye-fill' : 'eye-slash-fill'"/>
+              <icon :class-name="pwdType === 'password' ? 'eye-fill' : 'eye-slash-fill'" />
             </span>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" type="primary" style="width:100%;"
-                       @click.native.prevent="handleLogin(ruleFormRef)">
+            <el-button
+              :loading="loading"
+              type="primary"
+              style="width: 100%"
+              @click.native.prevent="handleLogin(ruleFormRef)"
+            >
               {{ $t('login.logIn') }}
             </el-button>
           </el-form-item>
           <div class="tips">
-            <span style="margin-right:20px;">Email: admin@laravel-vue-admin.eu.org</span>
+            <span style="margin-right: 20px">Email: admin@laravel-vue-admin.eu.org</span>
             <span>Password: 123456</span>
           </div>
         </el-form>
@@ -61,18 +72,18 @@
 
 <script>
 import LangSelect from '@/components/LangSelect/index.vue'
-import {validEmail} from '@/utils/validate'
-import {csrf} from '@/api/auth'
-import {reactive, toRefs, watch} from "vue"
-import {useRoute, useRouter} from "vue-router"
-import {userStore} from "@/store/user"
+import { validEmail } from '@/utils/validate'
+import { csrf } from '@/api/auth'
+import { reactive, toRefs, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { userStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
 import logo from '@/assets/login/logo.svg'
-import {useI18n} from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'Login',
-  components: {LangSelect},
+  components: { LangSelect },
   setup(props, ctx) {
     const router = useRouter()
     const validateEmail = (rule, value, callback) => {
@@ -92,12 +103,12 @@ export default {
     const resData = reactive({
       loginForm: {
         email: 'admin@laravel-vue-admin.eu.org',
-        password: '123456',
+        password: '123456'
       },
       ruleFormRef: {},
       loginRules: {
-        email: [{required: true, trigger: 'blur', validator: validateEmail}],
-        password: [{required: true, trigger: 'blur', validator: validatePass}],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
       pwdType: 'password',
@@ -114,7 +125,7 @@ export default {
     }
 
     const useUserStore = userStore()
-    const {t} = useI18n()
+    const { t } = useI18n()
     const handleLogin = (formEl) => {
       if (!formEl) {
         return
@@ -123,14 +134,16 @@ export default {
         if (valid) {
           resData.loading = true
           csrf().then(() => {
-            useUserStore.login(resData.loginForm).then(() => {
-              ElMessage({ message: t('login.loginSuccess'), type: 'success' })
-              router.push({path: resData.redirect || '/', query: resData.otherQuery}, onAbort => {
+            useUserStore
+              .login(resData.loginForm)
+              .then(() => {
+                ElMessage({ message: t('login.loginSuccess'), type: 'success' })
+                router.push({ path: resData.redirect || '/', query: resData.otherQuery }, (onAbort) => {})
+                resData.loading = false
               })
-              resData.loading = false
-            }).catch(() => {
-              resData.loading = false
-            })
+              .catch(() => {
+                resData.loading = false
+              })
           })
         } else {
           console.log('error submit!!')
@@ -148,17 +161,21 @@ export default {
     }
 
     const route = useRoute()
-    watch(() => route.query, (query) => {
-      if (query) {
-        resData.redirect = query.redirect
-        resData.otherQuery = getOtherQuery(query)
-      }
-    }, {immediate: true})
+    watch(
+      () => route.query,
+      (query) => {
+        if (query) {
+          resData.redirect = query.redirect
+          resData.otherQuery = getOtherQuery(query)
+        }
+      },
+      { immediate: true }
+    )
     return {
       ...toRefs(resData),
       showPwd,
       handleLogin,
-      getOtherQuery,
+      getOtherQuery
     }
   }
 }
@@ -206,12 +223,11 @@ $light_gray: #eee;
 </style>
 
 <style lang="scss">
-
 $bg: #1d1b28;
 $dark_gray: #889aa4;
 $light_gray: rgb(7, 6, 6);
 $bgColor: #054b5d;
-$brown: #B27C66;
+$brown: #b27c66;
 $textColor: #eee;
 
 .login {
@@ -220,7 +236,7 @@ $textColor: #eee;
   align-items: center;
   justify-content: center;
   background-color: $bgColor;
-  transition: background-color .3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
   overflow: auto;
 
   .login-container {
@@ -229,7 +245,7 @@ $textColor: #eee;
     min-height: 590px;
     display: grid;
     grid-template-columns: auto 480px;
-    transition: all .3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     transform: scale(1);
 
     .logo {
@@ -249,7 +265,9 @@ $textColor: #eee;
       background-position: 50%;
       background-size: cover;
       opacity: 1;
-      transition: opacity .3s ease-in-out, padding .2s ease-in-out;
+      transition:
+        opacity 0.3s ease-in-out,
+        padding 0.2s ease-in-out;
 
       .photo-credit {
         justify-content: flex-end;
@@ -258,7 +276,8 @@ $textColor: #eee;
         margin: 10px;
         padding: 5px 8px;
 
-        h4, span {
+        h4,
+        span {
           margin: 0;
         }
       }
@@ -269,7 +288,9 @@ $textColor: #eee;
       padding: 30px 60px;
       position: relative;
       opacity: 1;
-      transition: opacity .3s ease-in-out, padding .2s ease-in-out;
+      transition:
+        opacity 0.3s ease-in-out,
+        padding 0.2s ease-in-out;
     }
 
     .tips {

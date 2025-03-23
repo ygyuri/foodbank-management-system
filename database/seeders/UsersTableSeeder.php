@@ -34,6 +34,10 @@ class UsersTableSeeder extends Seeder
         ]);
 
         $role = Role::findByName(Acl::ROLE_ADMIN);
+
+         // Grant the admin role all permissions
+         $role->grantAdminPermissions(); // Call the method to assign all permissions
+
         $user->syncRoles($role);
     }
 }

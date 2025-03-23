@@ -1,88 +1,92 @@
 <template>
   <section>
     <el-table
-        ref="tableRef"
-        v-loading="loading"
-        :style="'width: 100%; height: ' + (tableHeight === '' ? '100%' : tableHeight)"
-        highlight-current-row
-        :tooltip-effect="tooltipEffect"
-        :row-key="getRowKey"
-        :stripe="stripe"
-        :data="tableData"
-        :height="tableHeight"
-        :border="border"
-        @row-click="toggleExpand"
-        @sort-change="handleSortChange"
-        @selection-change="handleSelectionChange"
+      ref="tableRef"
+      v-loading="loading"
+      :style="'width: 100%; height: ' + (tableHeight === '' ? '100%' : tableHeight)"
+      highlight-current-row
+      :tooltip-effect="tooltipEffect"
+      :row-key="getRowKey"
+      :stripe="stripe"
+      :data="tableData"
+      :height="tableHeight"
+      :border="border"
+      @row-click="toggleExpand"
+      @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
     >
-      <template v-for="(item,index) in tableColumn" :key="index">
+      <template v-for="(item, index) in tableColumn" :key="index">
         <el-table-column
-            v-if="item.filters"
-            :key="index+1"
-            :width="item.width"
-            :align="item.align"
-            :label="item.label"
-            :prop="item.prop"
-            :sortable="item.sortable"
-            :filters="item.filters ? item.filters : []"
-            :filter-method="filterHandler"
-            :show-overflow-tooltip="!item.operate"
+          v-if="item.filters"
+          :key="index + 1"
+          :width="item.width"
+          :align="item.align"
+          :label="item.label"
+          :prop="item.prop"
+          :sortable="item.sortable"
+          :filters="item.filters ? item.filters : []"
+          :filter-method="filterHandler"
+          :show-overflow-tooltip="!item.operate"
         >
           <template #default="scope">
-            <slot v-if="item.slot" :name="item.prop" v-bind="scope"/>
+            <slot v-if="item.slot" :name="item.prop" v-bind="scope" />
             <span v-else>{{ show(scope.row, item.prop, scope) }}</span>
           </template>
         </el-table-column>
         <el-table-column
-            v-else-if="item.type === 'selection'"
-            :type="item.type"
-            :width="item.width"
-            :key="index+1"
-        >
-        </el-table-column>
+          v-else-if="item.type === 'selection'"
+          :type="item.type"
+          :width="item.width"
+          :key="index + 1"
+        ></el-table-column>
         <el-table-column
-            v-else
-            :key="index+1"
-            :width="item.width"
-            :align="item.align ? item.align : 'center'"
-            :label="item.label"
-            :prop="item.prop"
-            :sortable="item.sortable"
-            show-overflow-tooltip
+          v-else
+          :key="index + 1"
+          :width="item.width"
+          :align="item.align ? item.align : 'center'"
+          :label="item.label"
+          :prop="item.prop"
+          :sortable="item.sortable"
+          show-overflow-tooltip
         >
           <template #default="scope">
-            <slot v-if="item.slot" :name="item.prop" v-bind="scope"/>
+            <slot v-if="item.slot" :name="item.prop" v-bind="scope" />
             <span v-else>{{ show(scope.row, item.prop) }}</span>
           </template>
         </el-table-column>
       </template>
       <el-table-column
-          v-if="tableOption.label"
-          :fixed="tableOption.fixed"
-          :align="tableOption.align ? tableOption.align : 'center'"
-          :width="tableOption.width"
-          :label="tableOption.label"
+        v-if="tableOption.label"
+        :fixed="tableOption.fixed"
+        :align="tableOption.align ? tableOption.align : 'center'"
+        :width="tableOption.width"
+        :label="tableOption.label"
       >
         <template #default="scope">
           <template v-if="tableOption.item_actions">
-            <slot v-if="tableOption.slot" name="table_options" v-bind="scope"/>
+            <slot v-if="tableOption.slot" name="table_options" v-bind="scope" />
             <template v-else-if="tableOption.item_actions.length <= 3">
-              <el-button v-for="(action, index) in tableOption.item_actions"
-                         :type="action.type ? action.type : 'primary'"
-                         :size="action.size ? action.size : ''"
-                         @click="callAction(action.name, scope.row)">
+              <el-button
+                v-for="(action, index) in tableOption.item_actions"
+                :type="action.type ? action.type : 'primary'"
+                :size="action.size ? action.size : ''"
+                @click="callAction(action.name, scope.row)"
+              >
                 <el-svg-item :el-svg-name="action.icon" :title="action.label"></el-svg-item>
               </el-button>
             </template>
             <template v-else>
               <el-dropdown>
-                  <span class="el-dropdown-link">
-                    {{ t('table.actions') }}<i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
+                <span class="el-dropdown-link">
+                  {{ t('table.actions') }}
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-for="(action, index) in tableOption.item_actions"
-                                    :command="action.name"
-                                    @click.native="callAction(action.name, scope.row)">
+                  <el-dropdown-item
+                    v-for="(action, index) in tableOption.item_actions"
+                    :command="action.name"
+                    @click.native="callAction(action.name, scope.row)"
+                  >
                     <el-svg-item :el-svg-name="action.icon" :title="action.label"></el-svg-item>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -94,28 +98,28 @@
     </el-table>
   </section>
 
-  <template v-if="paginate && pagination.total>0">
+  <template v-if="paginate && pagination.total > 0">
     <section class="pagination-container">
       <el-pagination
-          :page-sizes="pageSizes"
-          :layout="layout"
-          :current-page="pagination.current_page"
-          :page-size="pagination.per_page"
-          :total="pagination.total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+        :page-sizes="pageSizes"
+        :layout="layout"
+        :current-page="pagination.current_page"
+        :page-size="pagination.per_page"
+        :total="pagination.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
     </section>
   </template>
 </template>
 
 <script>
-import {useI18n} from "vue-i18n";
-import ElSvgItem from "./Item/ElSvgItem.vue"
-import {defineEmits} from "vue"
+import { useI18n } from 'vue-i18n'
+import ElSvgItem from './Item/ElSvgItem.vue'
+import { defineEmits } from 'vue'
 
 export default {
-  components: {ElSvgItem},
+  components: { ElSvgItem },
   props: {
     loading: {
       type: Boolean,
@@ -187,14 +191,14 @@ export default {
           currentPage: 1,
           pageSize: 10
         }
-      },
+      }
     },
     tableHeight: {
-      type: String,
+      type: String
     }
   },
   setup(props, ctx) {
-    const {t} = useI18n()
+    const { t } = useI18n()
     const resData = reactive({
       tableRef: ref(null)
     })
@@ -256,7 +260,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .pagination-container {

@@ -1,61 +1,96 @@
 <template>
   <el-row :gutter="40" class="panel-group">
+    <!-- Total Donations Card -->
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+      <div class="card-panel" @click="handleSetLineChartData('totalDonations')">
         <div class="card-panel-icon-wrapper icon-people">
-          <icon class-name="people card-panel-icon"/>
+          <el-icon class="card-panel-icon"><Money /></el-icon>
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">New Visits</div>
-          <span class="card-panel-num">102400</span>
-          <!--<count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />-->
+          <div class="card-panel-text">Total Donations</div>
+          <span class="card-panel-num">{{ overview?.total_donations || 0 }}</span>
         </div>
       </div>
     </el-col>
+
+    <!-- Total Foodbanks Card -->
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
+      <div class="card-panel" @click="handleSetLineChartData('totalFoodbanks')">
         <div class="card-panel-icon-wrapper icon-message">
-          <icon class-name="envelope card-panel-icon"/>
+          <el-icon class="card-panel-icon"><Shop /></el-icon>
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Messages</div>
-          <span class="card-panel-num">81212</span>
-          <!--<count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />-->
+          <div class="card-panel-text">Total Foodbanks</div>
+          <span class="card-panel-num">{{ overview?.total_foodbanks || 0 }}</span>
         </div>
       </div>
     </el-col>
+
+    <!-- Total Donors Card -->
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
+      <div class="card-panel" @click="handleSetLineChartData('totalDonors')">
         <div class="card-panel-icon-wrapper icon-money">
-          <icon class-name="currency-dollar card-panel-icon"/>
+          <el-icon class="card-panel-icon"><User /></el-icon>
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Purchases</div>
-          <span class="card-panel-num">9280</span>
-          <!--<count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />-->
+          <div class="card-panel-text">Total Donors</div>
+          <span class="card-panel-num">{{ overview?.total_donors || 0 }}</span>
         </div>
       </div>
     </el-col>
+
+    <!-- Total Recipients Card -->
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
+      <div class="card-panel" @click="handleSetLineChartData('totalRecipients')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <icon class-name="shop card-panel-icon"/>
+          <el-icon class="card-panel-icon"><UserFilled /></el-icon>
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Shoppings</div>
-          <span class="card-panel-num">13600</span>
-          <!-- <CountTo :start-val="0" :end-val="13600" class="card-panel-num" />-->
+          <div class="card-panel-text">Total Recipients</div>
+          <span class="card-panel-num">{{ overview?.total_recipients || 0 }}</span>
         </div>
       </div>
     </el-col>
   </el-row>
 </template>
-
 <script setup>
-const emit = defineEmits(['handleSetLineChartData'])
+import { onMounted, ref } from 'vue';
+import { useAnalyticsReportStore } from '@/store/analyticsReportStore'; // Import the Pinia store
+import { ElIcon, ElAlert } from 'element-plus';
+import { Loading } from '@element-plus/icons-vue';
+import { Money, Shop, User, UserFilled } from '@element-plus/icons-vue'; // Import the icons
+
+// const emit = defineEmits(['handleSetLineChartData']);
+
+// Fetch data from the Pinia store
+const analyticsReportStore = useAnalyticsReportStore();
+const overview = ref({});
+const loading = ref(false);
+const error = ref(null);
+
+// Fetch overview data when the component is mounted
+onMounted(async () => {
+  loading.value = true;
+  error.value = null;
+
+  try {
+    await analyticsReportStore.fetchOverview();
+    overview.value = analyticsReportStore.overview;
+  //  console.log('Overview data in component:', overview.value); // Log the data in the component
+  } catch (err) {
+    error.value = err.message || 'Failed to fetch overview data';
+    console.error('Error fetching overview data:', err);
+  } finally {
+    loading.value = false;
+  }
+});
+
+// Emit event when a card is clicked
+// Handle card click events
 const handleSetLineChartData = (type) => {
-  emit('handleSetLineChartData', type)
-}
+  //console.log(`Selected Chart Data: ${type}`);
+  // Perform the necessary state update or method call here
+};
 </script>
 
 <style lang="scss" scoped>
@@ -146,6 +181,37 @@ const handleSetLineChartData = (type) => {
       }
     }
   }
+}
+
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+
+  .loading-icon {
+    margin-right: 8px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.error-message {
+  margin-top: 16px;
 }
 
 @media (max-width: 550px) {

@@ -5,14 +5,14 @@
         <div class="block">
           <el-timeline>
             <el-timeline-item
-                placement="top"
-                v-for="(item, index) in timeLinesData"
-                :key="index"
-                :timestamp="item.created_at"
+              placement="top"
+              v-for="(item, index) in timeLinesData"
+              :key="index"
+              :timestamp="item.created_at"
             >
               <el-card>
-                <h4>{{item.title}}</h4>
-                <p>{{item.content}}</p>
+                <h4>{{ item.title }}</h4>
+                <p>{{ item.content }}</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
@@ -21,10 +21,10 @@
       <el-tab-pane v-loading="updating" :label="t('user.account')" name="second">
         <el-form :model="user" label-width="120px">
           <el-form-item :label="t('user.name')">
-            <el-input v-model="user.name" :disabled="disabled"/>
+            <el-input v-model="user.name" :disabled="disabled" />
           </el-form-item>
           <el-form-item :label="t('user.email')">
-            <el-input v-model="user.email" :disabled="disabled"/>
+            <el-input v-model="user.email" :disabled="disabled" />
           </el-form-item>
           <el-form-item :label="t('user.sex')">
             <el-radio-group v-model="user.sex">
@@ -34,24 +34,24 @@
           </el-form-item>
           <el-form-item :label="t('user.birthday')">
             <el-date-picker
-                v-model="user.birthday"
-                type="datetime"
-                :placeholder="t('user.birthday')"
-                value-format="YYYY-MM-DD HH:mm:ss"
+              v-model="user.birthday"
+              type="datetime"
+              :placeholder="t('user.birthday')"
+              value-format="YYYY-MM-DD HH:mm:ss"
             />
           </el-form-item>
           <el-form-item :label="t('user.description')">
             <el-input
-                v-model="user.description"
-                maxlength="255"
-                :placeholder="t('user.description')"
-                show-word-limit
-                type="textarea"
+              v-model="user.description"
+              maxlength="255"
+              :placeholder="t('user.description')"
+              show-word-limit
+              type="textarea"
             />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">
-              {{t('form.save')}}
+              {{ t('form.save') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -63,8 +63,8 @@
 <script setup>
 import UserResource from '@/api/user'
 import dayjs from 'dayjs'
-import {ElMessage} from "element-plus"
-import {useI18n} from "vue-i18n";
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   user: {
@@ -79,11 +79,11 @@ const props = defineProps({
         birthday: '2006-01-02 15:04:05',
         description: ''
       }
-    },
-  },
+    }
+  }
 })
 
-const {t} = useI18n({useScope: 'global'})
+const { t } = useI18n({ useScope: 'global' })
 
 const userResource = new UserResource('users')
 const resData = reactive({
@@ -98,7 +98,7 @@ const resData = reactive({
   timeLinesData: [],
   timeLinesParams: {
     page: 1,
-    per_page: 10,
+    per_page: 10
   },
   timeLinesPagination: {
     total: 0,
@@ -107,9 +107,7 @@ const resData = reactive({
   }
 })
 
-const handleClick = (tab, event) => {
-
-}
+const handleClick = (tab, event) => {}
 const onSubmit = () => {
   resData.updating = true
   let params = {
@@ -120,19 +118,19 @@ const onSubmit = () => {
     params.birthday = dayjs(props.user.birthday).format('YYYY-MM-DD HH:mm:ss')
   }
   userResource
-      .update(props.user.id, params)
-      .then(response => {
-        resData.updating = false
-        ElMessage({
-          message: 'User information has been updated successfully',
-          type: 'success',
-          duration: 5 * 1000,
-        })
+    .update(props.user.id, params)
+    .then((response) => {
+      resData.updating = false
+      ElMessage({
+        message: 'User information has been updated successfully',
+        type: 'success',
+        duration: 5 * 1000
       })
-      .catch(error => {
-        console.log(error)
-        resData.updating = false
-      })
+    })
+    .catch((error) => {
+      console.log(error)
+      resData.updating = false
+    })
 }
 
 const getTimeLines = () => {
@@ -142,13 +140,14 @@ const getTimeLines = () => {
   })
 }
 
-const {activeActivity, updating, disabled, timeLinesData, timeLinesPagination} = toRefs(resData)
+const { activeActivity, updating, disabled, timeLinesData, timeLinesPagination } = toRefs(resData)
 </script>
 
 <style lang="scss" scoped>
 .user-activity {
   .user-block {
-    .username, .description {
+    .username,
+    .description {
       display: block;
       margin-left: 50px;
       padding: 2px 0;
@@ -205,7 +204,8 @@ const {activeActivity, updating, disabled, timeLinesData, timeLinesPagination} =
     }
 
     .link-black {
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: #999;
       }
     }
@@ -223,7 +223,7 @@ const {activeActivity, updating, disabled, timeLinesData, timeLinesPagination} =
     background-color: #99a9bf;
   }
 
-  .el-carousel__item:nth-child(2n+1) {
+  .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
   }
 }

@@ -56,15 +56,19 @@ class RoleController extends BaseController
      */
     public function update(Request $request, Role $role)
     {
-        if ($role === null || $role->isAdmin()) {
-            return responseFailed('Role not found', Response::HTTP_NOT_FOUND);
+        if (!$role || $role->isAdmin()) {
+            return response()->json(['message' => 'Role not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $permissionIds = $request->get('permissions', []);
-        $permissions = Permission::allowed()->whereIn('id', $permissionIds)->get();
+        $permissions = $request->input('permissions', []);
+
+        // Sync permissions with the role
         $role->syncPermissions($permissions);
-        $role->save();
-        return new RoleResource($role);
+
+        return response()->json([
+            'message' => 'Permissions updated successfully',
+            'role' => new RoleResource($role)
+        ]);
     }
 
     /**

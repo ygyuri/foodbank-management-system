@@ -1,44 +1,43 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}" />
+  <div :id="id" :class="className" :style="{ height: height, width: width }" />
 </template>
 
 <script setup>
 import * as echarts from 'echarts'
-import {markRaw} from "vue"
+import { markRaw } from 'vue'
 
 const props = defineProps({
   className: {
     type: String,
-    default: 'chart',
+    default: 'chart'
   },
   id: {
     type: String,
-    default: 'chart',
+    default: 'chart'
   },
   width: {
     type: String,
-    default: '200px',
+    default: '200px'
   },
   height: {
     type: String,
-    default: '200px',
-  },
+    default: '200px'
+  }
 })
 
 const resData = reactive({
   chart: null
 })
 
-
-const initChart=() => {
+const initChart = () => {
   resData.chart = markRaw(echarts.init(document.getElementById(props.id)))
-  const xData = (function() {
+  const xData = (function () {
     const data = []
     for (let i = 1; i < 13; i++) {
       data.push(i + 'month')
     }
     return data
-  }())
+  })()
   resData.chart.setOption({
     backgroundColor: '#344b58',
     title: {
@@ -47,20 +46,20 @@ const initChart=() => {
       top: '20',
       textStyle: {
         color: '#fff',
-        fontSize: '22',
+        fontSize: '22'
       },
       subtextStyle: {
         color: '#90979c',
-        fontSize: '16',
-      },
+        fontSize: '16'
+      }
     },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
         textStyle: {
-          color: '#fff',
-        },
-      },
+          color: '#fff'
+        }
+      }
     },
     grid: {
       left: '5%',
@@ -69,87 +68,93 @@ const initChart=() => {
       top: 150,
       bottom: 95,
       textStyle: {
-        color: '#fff',
-      },
+        color: '#fff'
+      }
     },
     legend: {
       x: '5%',
       top: '10%',
       textStyle: {
-        color: '#90979c',
+        color: '#90979c'
       },
-      data: ['female', 'male', 'average'],
+      data: ['female', 'male', 'average']
     },
     calculable: true,
-    xAxis: [{
-      type: 'category',
-      axisLine: {
-        lineStyle: {
-          color: '#90979c',
+    xAxis: [
+      {
+        type: 'category',
+        axisLine: {
+          lineStyle: {
+            color: '#90979c'
+          }
         },
-      },
-      splitLine: {
-        show: false,
-      },
-      axisTick: {
-        show: false,
-      },
-      splitArea: {
-        show: false,
-      },
-      axisLabel: {
-        interval: 0,
-      },
-      data: xData,
-    }],
-    yAxis: [{
-      type: 'value',
-      splitLine: {
-        show: false,
-      },
-      axisLine: {
-        lineStyle: {
-          color: '#90979c',
+        splitLine: {
+          show: false
         },
+        axisTick: {
+          show: false
+        },
+        splitArea: {
+          show: false
+        },
+        axisLabel: {
+          interval: 0
+        },
+        data: xData
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#90979c'
+          }
+        },
+        axisTick: {
+          show: false
+        },
+        axisLabel: {
+          interval: 0
+        },
+        splitArea: {
+          show: false
+        }
+      }
+    ],
+    dataZoom: [
+      {
+        id: 'dataZoomX',
+        filterMode: 'filter',
+        show: true,
+        height: 30,
+        type: 'slider',
+        xAxisIndex: [0],
+        bottom: 30,
+        start: 20,
+        end: 80,
+        handleIcon:
+          'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+        handleSize: '110%',
+        handleStyle: {
+          color: '#d3dee5'
+        },
+        textStyle: {
+          color: '#fff'
+        },
+        borderColor: '#90979c'
       },
-      axisTick: {
-        show: false,
-      },
-      axisLabel: {
-        interval: 0,
-      },
-      splitArea: {
-        show: false,
-      },
-    }],
-    dataZoom: [{
-      id: 'dataZoomX',
-      filterMode: 'filter',
-      show: true,
-      height: 30,
-      type: 'slider',
-      xAxisIndex: [
-        0,
-      ],
-      bottom: 30,
-      start: 20,
-      end: 80,
-      handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
-      handleSize: '110%',
-      handleStyle: {
-        color: '#d3dee5',
-      },
-      textStyle: {
-        color: '#fff'
-      },
-      borderColor: '#90979c',
-    }, {
-      type: 'inside',
-      show: true,
-      height: 15,
-      start: 1,
-      end: 35,
-    }],
+      {
+        type: 'inside',
+        show: true,
+        height: 15,
+        start: 1,
+        end: 35
+      }
+    ],
     series: [
       {
         name: 'female',
@@ -162,28 +167,15 @@ const initChart=() => {
           label: {
             show: true,
             textStyle: {
-              color: '#fff',
+              color: '#fff'
             },
             position: 'insideTop',
             formatter(p) {
               return p.value > 0 ? p.value : ''
-            },
-          },
+            }
+          }
         },
-        data: [
-          709,
-          1917,
-          2455,
-          2610,
-          1719,
-          1433,
-          1544,
-          3285,
-          5208,
-          3372,
-          2484,
-          4078,
-        ],
+        data: [709, 1917, 2455, 2610, 1719, 1433, 1544, 3285, 5208, 3372, 2484, 4078]
       },
       {
         name: 'male',
@@ -196,23 +188,11 @@ const initChart=() => {
           position: 'top',
           formatter(p) {
             return p.value > 0 ? p.value : ''
-          },
+          }
         },
-        data: [
-          327,
-          1776,
-          507,
-          1200,
-          800,
-          482,
-          204,
-          1390,
-          1001,
-          951,
-          381,
-          220,
-        ],
-      }, {
+        data: [327, 1776, 507, 1200, 800, 482, 204, 1390, 1001, 951, 381, 220]
+      },
+      {
         name: 'average',
         type: 'line',
         stack: 'total',
@@ -225,24 +205,11 @@ const initChart=() => {
           position: 'top',
           formatter(p) {
             return p.value > 0 ? p.value : ''
-          },
+          }
         },
-        data: [
-          1036,
-          3693,
-          2962,
-          3810,
-          2519,
-          1915,
-          1748,
-          4675,
-          6209,
-          4323,
-          2865,
-          4298,
-        ],
-      },
-    ],
+        data: [1036, 3693, 2962, 3810, 2519, 1915, 1748, 4675, 6209, 4323, 2865, 4298]
+      }
+    ]
   })
 }
 

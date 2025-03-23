@@ -1,6 +1,6 @@
 <template>
-  <div id="screenfull" class="pl-1 pr-1 mtPx-2" >
-      <icon :class-name="isFullscreen ? 'fullscreen-exit' : 'fullscreen'" class="nav-svg-icon" @click="click"/>
+  <div id="screenfull" class="pl-1 pr-1 mtPx-2">
+    <icon :class-name="isFullscreen ? 'fullscreen-exit' : 'fullscreen'" class="nav-svg-icon" @click="click" />
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const click = () => {
 }
 const change = () => {
   resData.isFullscreen = screenfull.isFullscreen
-    console.log(resData.isFullscreen)
+  console.log(resData.isFullscreen)
 }
 const init = () => {
   if (screenfull.isEnabled) {

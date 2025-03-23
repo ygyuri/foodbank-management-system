@@ -9,9 +9,7 @@
         <span>{{ t('user.education') }}</span>
       </div>
       <div class="user-bio-section-body">
-        <div class="text-muted">
-          B.S. in Communication Engineering from Hunan University of Technology
-        </div>
+        <div class="text-muted">B.S. in Communication Engineering from Hunan University of Technology</div>
       </div>
     </div>
     <div class="user-skills user-bio-section">
@@ -42,10 +40,9 @@
 </template>
 
 <script setup>
-import {useI18n} from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
-const {t} = useI18n({useScope: 'global'})
-
+const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <style lang="scss">

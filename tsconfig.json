@@ -1,54 +1,81 @@
 {
   "compilerOptions": {
+    // Specify the target JavaScript version for compilation (ESNext supports the latest JS features)
     "target": "esnext",
+
+    // Specify the module system (ESNext supports modern ES modules)
     "module": "esnext",
-    //	启用所有严格类型检查选项。
-    //启用 --strict相当于启用 --noImplicitAny, --noImplicitThis, --alwaysStrict， --strictNullChecks和 --strictFunctionTypes和--strictPropertyInitialization。
+
+    // Enable all strict type-checking options (equivalent to enabling `noImplicitAny`, `noImplicitThis`, 
+    // `alwaysStrict`, `strictNullChecks`, `strictFunctionTypes`, and `strictPropertyInitialization`)
     "strict": true,
-    // 允许编译器编译JS，JSX文件
+
+    // Allow TypeScript to compile JavaScript and JSX files
     "allowJs": true,
-    // 允许在JS文件中报错，通常与allowJS一起使用
+
+    // Do not report errors in JavaScript files (useful when `allowJs` is enabled)
     "checkJs": false,
-    // 允许使用jsx
+
+    // Preserve JSX syntax instead of transforming it (useful for React projects)
     "jsx": "preserve",
+
+    // Generate `.d.ts` declaration files to describe TypeScript types for compiled modules
     "declaration": true,
-    //移除注解
+
+    // Remove comments from the output JavaScript files
     "removeComments": true,
-    //不可以忽略any
+
+    // Disallow implicit `any` type for variables (must be explicitly typed)
     "noImplicitAny": true,
-    //关闭 this 类型注解提示
+
+    // Disallow `this` to be implicitly typed as `any`
     "noImplicitThis": true,
-    //null/undefined不能作为其他类型的子类型：
-    //let a: number = null; //这里会报错.
+
+    // Enable strict null checks (disallows assigning `null` or `undefined` to non-nullable types)
     "strictNullChecks": true,
-    //生成枚举的映射代码
+
+    // Preserve constant enums in the compiled output to optimize performance
     "preserveConstEnums": true,
-    //根目录
-    //输出目录
+
+    // Specify the output directory for compiled JavaScript files
     "outDir": "./ts-out-dir",
-    //是否输出src2.js.map文件
+
+    // Generate source maps to enable debugging of TypeScript files in browsers
     "sourceMap": true,
-    //变量定义了但是未使用
+
+    // Do not report unused local variables (set to `true` to enforce cleaner code)
     "noUnusedLocals": false,
-    //是否允许把json文件当做模块进行解析
+
+    // Allow importing JSON files as modules
     "resolveJsonModule": true,
-    //和noUnusedLocals一样，针对func
+
+    // Do not report unused function parameters (set to `true` to enforce cleaner code)
     "noUnusedParameters": false,
-    // 模块解析策略，ts默认用node的解析策略，即相对的方式导入
+
+    // Specify the module resolution strategy (Node.js module resolution is used by default)
     "moduleResolution": "node",
-    //允许export=导出，由import from 导入
+
+    // Enable interoperability between ES modules and CommonJS modules (allows `import` and `require` to work together)
     "esModuleInterop": true,
-    //忽略所有的声明文件（ *.d.ts）的类型检查。
+
+    // Skip type checking for declaration files (*.d.ts)
     "skipLibCheck": true,
+
+    // Set the base directory for resolving non-relative module imports
     "baseUrl": ".",
+
+    // Define path aliases for module resolution
     "paths": {
-      "@/*": ["resources/js/*"],
+      "@/*": ["resources/js/*"]
     },
-    //指定默认读取的目录
-    //"typeRoots": ["./node_modules/@types/", "./types"],
+
+    // Specify the default libraries to include (ES2018 features and DOM APIs)
     "lib": ["ES2018", "DOM"]
   },
-  //"files": [],
-  //include包含文件夹会被ts进行读取
-  "include": ["resources/js"]
+
+  // Specify directories and files to be included in the TypeScript compilation
+  "include": [
+    "resources/js",
+    "public/service-worker.js"
+  ]
 }

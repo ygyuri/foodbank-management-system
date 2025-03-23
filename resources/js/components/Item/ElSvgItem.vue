@@ -3,7 +3,7 @@
     <el-icon :class="showClass" style="display: contents">
       <component :is="ElSvg[elSvgName]" />
     </el-icon>
-    <span v-if="title">{{title}}</span>
+    <span v-if="title">{{ title }}</span>
   </section>
 </template>
 

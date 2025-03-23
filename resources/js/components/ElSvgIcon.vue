@@ -1,6 +1,6 @@
 <template>
   <el-icon :size="size" :color="color">
-    <component :is="ElSvg[name]"/>
+    <component :is="ElSvg[name]" />
   </el-icon>
 </template>
 
@@ -24,7 +24,7 @@ const props = defineProps({
     type: String
   }
 })
-let {name} = props
+let { name } = props
 </script>
 
 <style scoped lang="scss">

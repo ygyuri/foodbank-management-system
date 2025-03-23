@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="emptyGif">
-      <img :src="yierGif" style="width: 50%;float: left;transform: rotateY(180deg);" />
+      <img :src="yierGif" style="width: 50%; float: left; transform: rotateY(180deg)" />
       <img :src="bubuGif" style="width: 50%; float: right" />
     </div>
   </div>

@@ -31,7 +31,7 @@ import { isExternal } from '@/utils/validate'
 import path from 'path'
 import i18n from '@/utils/i18n'
 
-const {generateTitle} = i18n()
+const { generateTitle } = i18n()
 const props = defineProps({
   item: {
     type: Object,

@@ -16,7 +16,7 @@ export default {
     page404: '404',
     administrator: 'Administrator',
     users: '用户列表',
-    userProfile: '用户信息',
+    userProfile: '用户信息'
   },
   navbar: {
     logOut: '退出登录',
@@ -47,7 +47,7 @@ export default {
     tips: '在某些情况下，不适合使用 v-permission。例如：element-plus 的 Tab 组件或 el-table-column 以及其它动态渲染 dom 的场景。你只能通过手动设置 v-if 来实现。',
     delete: '删除',
     confirm: '确定',
-    cancel: '取消',
+    cancel: '取消'
   },
   table: {
     description: '描述',
@@ -74,20 +74,20 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定',
+    confirm: '确 定'
   },
   tagsView: {
     refresh: '刷新',
     close: '关闭',
     closeOthers: '关闭其它',
-    closeAll: '关闭所有',
+    closeAll: '关闭所有'
   },
   settings: {
     title: '页面风格设置',
     theme: '主题颜色',
     tagsView: '开启标签视图',
     fixedHeader: '固定头部',
-    sidebarLogo: '侧边栏Logo',
+    sidebarLogo: '侧边栏Logo'
   },
   user: {
     role: '角色',
@@ -114,7 +114,7 @@ export default {
       manager: '对除权限页以外的大多数页面具有访问权限。',
       editor: '可以访问大多数页面，对文章和相关资源拥有完全权限。',
       user: '可以访问某些页面',
-      visitor: '有权访问静态页面，不应具有任何可写权限',
-    },
-  },
-};
+      visitor: '有权访问静态页面，不应具有任何可写权限'
+    }
+  }
+}

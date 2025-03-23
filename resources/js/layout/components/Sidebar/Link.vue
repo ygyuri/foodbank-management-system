@@ -37,8 +37,7 @@ const linkProps = (to) => {
 const resData = reactive({
   levelList: null
 })
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style scoped lang="scss"></style>
