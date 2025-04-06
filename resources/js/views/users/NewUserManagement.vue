@@ -52,10 +52,10 @@
         </el-table-column>
         <el-table-column label="Actions" width="220">
           <template #default="{ row }">
-            <el-button size="small" type="primary" icon="el-icon-edit" @click="openEditModal(row)" v-if="canEditUser(row)">Edit</el-button>
-            <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteUser(row)" v-if="canDeleteUser(row)">Delete</el-button>
-            <el-dropdown v-if="canChangeStatus">
-              <el-button size="small" type="info" icon="el-icon-arrow-down">Change Status</el-button>
+            <el-button size="small" type="primary" icon="el-icon-edit" @click="openEditModal(row)" v-if="canViewUsers">Edit</el-button>
+            <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteUser(row)" v-if="canViewUsers">Delete</el-button>
+            <el-dropdown >
+              <el-button size="small" type="info" icon="el-icon-arrow-down" v-if="canViewUsers">Change Status</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="updateStatus(row.id, 'approved')">Approve</el-dropdown-item>
@@ -252,13 +252,13 @@ const canViewUsers = computed(() => {
 
 const canEditUser = (row) => {
   const result = ability.can('edit', 'users', { user_id: row.id });
-  console.log('canEditUser:', result);
+  console.log('canEditUser:', result, 'Row:', row);
   return result;
 };
 
 const canDeleteUser = (row) => {
   const result = ability.can('delete', 'users', { user_id: row.id });
-  console.log('canDeleteUser:', result);
+  console.log('canDeleteUser:', result, 'Row:', row);
   return result;
 };
 
@@ -267,7 +267,6 @@ const canChangeStatus = computed(() => {
   console.log('canChangeStatus:', result);
   return result;
 });
-
 
 const updateStatus = async (id, newStatus) => {
   try {

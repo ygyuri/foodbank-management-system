@@ -44,7 +44,7 @@
               auto-complete="on"
               placeholder="password"
               :type="pwdType"
-              @keyup.enter.native="handleLogin(ruleFormRef)"
+              @keyup.enter="handleLogin(ruleFormRef)"
             />
             <span class="show-pwd" @click="showPwd">
               <icon :class-name="pwdType === 'password' ? 'eye-fill' : 'eye-slash-fill'" />
@@ -55,15 +55,32 @@
               :loading="loading"
               type="primary"
               style="width: 100%"
-              @click.native.prevent="handleLogin(ruleFormRef)"
+              @click.prevent="handleLogin(ruleFormRef)"
             >
               {{ $t('login.logIn') }}
             </el-button>
           </el-form-item>
-          <div class="tips">
-            <span style="margin-right: 20px">Email: admin@laravel-vue-admin.eu.org</span>
-            <span>Password: 123456</span>
-          </div>
+    <!-- Register Button -->
+    <el-form-item>
+            <el-button
+              type="success"
+              style="width: 100%"
+              @click="openRegisterModal"
+            >
+          Register or Create an Account
+            </el-button>
+          </el-form-item>
+
+          <!-- Register Modal -->
+          <el-dialog
+            v-model="isRegisterModalVisible"
+            title="Register"
+            width="50%"
+            :close-on-click-modal="false"
+            @close="resetRegisterForm"
+          >
+            <Register @registration-complete="handleRegistrationComplete" />
+          </el-dialog>
         </el-form>
       </div>
     </div>
@@ -80,12 +97,16 @@ import { userStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
 import logo from '@/assets/login/logo.svg'
 import { useI18n } from 'vue-i18n'
+import Register from './Register.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Login',
-  components: { LangSelect },
+  components: { LangSelect, Register },
   setup(props, ctx) {
     const router = useRouter()
+    const isRegisterModalVisible = ref(false) // Control modal visibility
+
     const validateEmail = (rule, value, callback) => {
       if (!validEmail(value)) {
         callback(new Error('Please enter the correct email'))
@@ -160,6 +181,21 @@ export default {
       }, {})
     }
 
+
+    const openRegisterModal = () => {
+      isRegisterModalVisible.value = true
+    }
+
+    const resetRegisterForm = () => {
+      console.log('Resetting register form...')
+    }
+
+    const handleRegistrationComplete = () => {
+      ElMessage.success('Registration successful! Please log in.')
+      isRegisterModalVisible.value = false
+      window.location.reload() // Refresh the page after registration
+    }
+
     const route = useRoute()
     watch(
       () => route.query,
@@ -175,7 +211,11 @@ export default {
       ...toRefs(resData),
       showPwd,
       handleLogin,
-      getOtherQuery
+      getOtherQuery,
+      isRegisterModalVisible,
+      openRegisterModal,
+      resetRegisterForm,
+      handleRegistrationComplete
     }
   }
 }

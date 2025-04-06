@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DonationRequestController;
 use App\Models\Notification;
 use App\Http\Controllers\AnalyticsReportController;
+use App\Http\Controllers\RolePermissionController;
 
 //use App\Http\Controllers\RequestFBController;
 //use App\Http\Controllers\Api\DonationController;
@@ -26,7 +27,7 @@ use App\Http\Controllers\AnalyticsReportController;
 |
 */
 
-
+Route::post('/register', [UserController::class, 'register'])->name('register');
 // Analytics report routes
 // Apply the 'auth:api' middleware to all routes under the 'analytics-reports' prefix
 Route::middleware('auth:api')->prefix('analytics-reports')->group(function () {
@@ -41,6 +42,18 @@ Route::middleware('auth:api')->prefix('analytics-reports')->group(function () {
     Route::get('/donor-information', [AnalyticsReportController::class, 'donorInformation']);
 });
 
+// Role and Permission routes
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/roles', [RolePermissionController::class, 'getRoles']);
+    Route::get('/permissions', [RolePermissionController::class, 'getPermissions']);
+    Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'updateRolePermissions']);
+    Route::post('/users/{userId}/roles', [RolePermissionController::class, 'assignRoleToUser']);
+});
+
+Route::get('/roles', [RolePermissionController::class, 'getRoles']);
+Route::get('/permissions', [RolePermissionController::class, 'getPermissions']);
+Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'updateRolePermissions']);
+Route::post('/users/{userId}/roles', [RolePermissionController::class, 'assignRoleToUser']);
 
 // Feedback routes
 Route::middleware(['auth:api'])->group(function () {
@@ -104,9 +117,9 @@ Route::namespace('Api')->group(function() {
         Route::get('/user', 'AuthController@user');
 
         // Api resource routes
-        Route::apiResource('roles', 'RoleController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
+      //  Route::apiResource('roles', 'RoleController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
         Route::apiResource('users', 'UserController');
-        Route::apiResource('permissions', 'PermissionController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
+       // Route::apiResource('permissions', 'PermissionController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
         //user approval matrix 
         Route::post('/users/{id}/approve', [UserController::class, 'approveUser']);
         Route::post('/users/{id}/reject', [UserController::class, 'rejectUser']);

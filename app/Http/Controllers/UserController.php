@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -300,4 +301,70 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to fetch filtered users', 'message' => $e->getMessage()], 500);
         }
     }
+    public function register(Request $request)
+     {
+         Log::info('Incoming Register Request', $request->all());
+     
+         $validator = Validator::make($request->all(), [
+             'name' => ['required', 'string', 'max:255'],
+             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+             'password' => ['required', 'min:6', 'confirmed'],
+             'role' => ['required', 'string', Rule::in(['recipient', 'donor', 'foodbank'])],
+             'phone' => ['nullable', 'string', 'max:20'],
+             'birthday' => ['nullable', 'date'],
+             'sex' => ['nullable', 'in:male,female'], // Validate as 'male' or 'female'
+             'location' => ['nullable', 'string'],
+             'address' => ['nullable', 'string'],
+             'organization_name' => ['nullable', 'string'],
+             'recipient_type' => ['nullable', Rule::in(['individual', 'organization'])],
+             'donor_type' => ['nullable', 'string'],
+             'notes' => ['nullable', 'string'],
+         ]);
+     
+         if ($validator->fails()) {
+             return response()->json([
+                 'message' => $validator->errors()->first(),
+                 'errors' => $validator->errors()
+             ], Response::HTTP_BAD_REQUEST);
+         }
+     
+         try {
+             DB::beginTransaction();
+     
+             $params = $request->only([
+                 'name', 'email', 'password', 'role', 'phone', 'birthday', 'sex',
+                 'location', 'address', 'organization_name', 'recipient_type', 'donor_type', 'notes'
+             ]);
+     
+             // Convert birthday to the correct format if it exists
+             if (!empty($params['birthday'])) {
+                 $params['birthday'] = \Carbon\Carbon::parse($params['birthday'])->format('Y-m-d');
+             }
+     
+             // Map 'male' to 0 and 'female' to 1 for the 'sex' field
+             if (!empty($params['sex'])) {
+                 $params['sex'] = $params['sex'] === 'male' ? 0 : 1;
+             }
+     
+             $params['password'] = Hash::make($params['password']);
+             $user = User::create($params);
+     
+             $role = Role::where('name', $request->role)->first();
+             if (!$role) {
+                 throw new \Exception("Invalid role selected.");
+             }
+             $user->syncRoles([$role]);
+     
+             Mail::to($user->email)->send(new WelcomeUserMail($user, $request->password));
+     
+             DB::commit();
+             return response()->json(['message' => 'Registration successful!'], Response::HTTP_CREATED);
+         } catch (\Throwable $ex) {
+             DB::rollBack();
+             return response()->json([
+                 'message' => 'Registration failed. Please try again.',
+                 'error' => $ex->getMessage()
+             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+         }
+     }
 }

@@ -1,62 +1,93 @@
-# FBHMP
+# 🏢 Foodbank Management System
 
-[FBHMP](https://laravel-vue-admin.eu.org) is a beautiful dashboard combination of [Laravel](https://laravel.com/), [Vue3](https://github.com/vuejs/vue) and the UI Toolkit [Element Plus](https://element-plus.org/).
+## **Overview**
+The **Foodbank Management System** is a Laravel + Vue 3 application designed to facilitate the donation, distribution, and tracking of food donations across multiple foodbanks. The system includes user authentication, role-based dashboards, donation management, recipient tracking, and real-time notifications.
 
-## Getting started
+---
 
-### Installing
+## **🚀 Features**
+✅ **User Authentication & Authorization**  
+- JWT-based authentication  
+- Role-based access control using CASL Vue (Admin, Foodbanks, Donors, Recipients)  
 
-#### Manual
+✅ **Foodbank Management**  
+- Admin can register, approve, or reject foodbanks  
+- Foodbanks can manage donation requests  
 
+✅ **Donation Management**  
+- Donors can create and track donations  
+- The system matches donations to foodbank requests  
+- Admin approves or rejects donations  
+
+✅ **Recipient Management**  
+- Recipients can sign up and request donations  
+- Recipients provide feedback and receive SMS notifications  
+
+✅ **Reporting & Analytics**  
+- Admins and foodbanks can generate reports using ApexCharts  
+- Real-time donation trends and recipient demographics  
+
+✅ **Real-Time Notifications**  
+- Laravel Echo and Pusher for instant donation updates  
+
+---
+
+## **📊 Data Flow Overview**
+### **1️⃣ User Authentication & Authorization**
+- Users log in using email/password or Google OAuth.
+- Laravel issues a JWT token for secure authentication.
+- CASL Vue manages access based on roles.
+
+### **2️⃣ Foodbank Registration & Approval**
+- Admin registers foodbanks via a form.
+- Approval or rejection notifications are sent to the foodbanks.
+
+### **3️⃣ Donation Lifecycle**
+1. Donors create a donation request (food type, quantity, recipient).
+2. The system matches donations to foodbank requests.
+3. Admin reviews and approves donations.
+4. Donors and recipients receive real-time notifications.
+
+### **4️⃣ Real-Time Notifications**
+- Events like donation approval trigger Laravel Echo/Pusher.
+- Users get instant notifications about updates.
+
+---
+
+## **📝 User Stories**
+### **👨‍💼 Admin User Stories**
+- ✅ As an Admin, I want to register foodbanks so they can receive donations.
+- ✅ As an Admin, I want to monitor donation statuses and generate reports.
+
+### **🏢 Foodbank User Stories**
+- ✅ As a Foodbank, I want to create donation requests to receive needed food.
+- ✅ As a Foodbank, I want to track assigned donations.
+
+### **🎁 Donor User Stories**
+- ✅ As a Donor, I want to donate food by specifying type and quantity.
+- ✅ As a Donor, I want to track my donation history.
+
+### **👥 Recipient User Stories**
+- ✅ As a Recipient, I want to sign up and request food.
+- ✅ As a Recipient, I want to submit feedback on received donations.
+
+---
+
+## **🛠️ Tech Stack**
+| Stack | Technology Used |
+|----------------|----------------|
+| **Frontend** | Vue 3, Vuex, Tailwind CSS |
+| **Backend** | Laravel 10, Sanctum (JWT Authentication) |
+| **Database** | MySQL |
+| **Notifications** | Laravel Echo, Pusher |
+| **Messaging** | Twilio/Nexmo for SMS |
+| **Charts** | Chart.js, ApexCharts |
+| **Hosting** | Railway.app, Vercel |
+
+---
+
+## **🔧 Installation & Setup**
+### **1️⃣ Clone the Repository**
 ```bash
-# Clone the project and run composer
-git clone https://github.com/trumanwong/laravel-vue-admin
-cd laravel-vue-admin
-
-# Migration and DB seeder (after changing your DB settings in .env)
-php artisan migrate --seed
-
-# Install dependency with NPM
-npm install
-
-# develop
-npm run watch
-
-# Build on production
-npm run build
-```
-
-#### Docker
-
-```sh
-docker-compose up -d
-```
-
-Build static files within `Laravel` container with `npm`
-
-```sh
-docker exec -it laravel-vue-admin npm run watch
-```
-
-Open http://localhost:8000 (laravel container port declared in `docker-compose.yml`) to access FBHMP.
-
-## Built with
-
-- [Laravel](https://laravel.com/) - The PHP Framework For Web Artisans
-- [Laravel Sanctum](https://github.com/laravel/sanctum/) - Laravel Sanctum provides a featherweight authentication system for SPAs and simple APIs.
-- [spatie/laravel-permission](https://github.com/spatie/laravel-permission) - Associate users with permissions and roles.
-- [VueJS](https://vuejs.org/) - The Progressive JavaScript Framework
-- [Element Plus](https://element-plus.org/) -A Vue.js 3 UI library
-- [vue3-admin-ts](https://github.com/jzfai/vue3-admin-ts) - A minimal vue3 admin template with Element-Plus UI & axios & permission control & lint & hook
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
-
-## Acknowledgements
-
-- [Laravel](https://laravel.com/) - The PHP Framework For Web Artisans
-- [VueJS](https://vuejs.org/) - The Progressive JavaScript Framework
-- [vue3-admin-ts](https://panjiachen.github.io/vue-element-admin/#/) A minimal vue3 admin template with Element-Plus UI & axios & permission control & lint & hook
-- [Echarts](http://echarts.apache.org/) - A powerful, interactive charting and visualization library for browser.
-- [Cloudflare](https://https://www.cloudflare.com/) - A global network built for the cloud
+git clone https://github.com/YOUR_USERNAME/foodbank-management-system.git
+cd foodbank-management-system
