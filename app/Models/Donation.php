@@ -38,10 +38,10 @@ class Donation extends Model
     }
 
     // Optional: Add a method for the admin if needed
-    public function admin()
-    {
-        return $this->belongsTo(User::class, 'admin_id')->where('role', 'admin');
-    }
+    // public function admin()
+    // {
+    //     return $this->belongsTo(User::class, 'admin_id')->where('role', 'admin');
+    // }
 
     // In Donation model
     public static function getHistoricalData($period)
@@ -53,5 +53,17 @@ class Donation extends Model
                        DB::raw('DATE(created_at) as date'),
                        DB::raw('COUNT(*) as count'),
                    ]);
+    }
+
+    public function foodbankActivity()
+    {
+        return $this->hasOne(FoodbankActivity::class, 'related_id')
+                    ->where('activity_type', 'received_donation');
+    }
+
+    public function donorTransaction()
+    {
+        return $this->hasOne(DonorTransaction::class, 'related_id')
+                    ->where('transaction_type', 'donation_created');
     }
 }

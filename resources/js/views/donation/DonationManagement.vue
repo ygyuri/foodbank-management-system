@@ -3,126 +3,169 @@
     <h2 class="text-2xl font-bold mb-4">Donation Management</h2>
 
     <div v-if="canCreateDonation">
-      <!-- Create Donation Button -->
-      <el-button v-if="canCreateDonation" type="primary" icon="el-icon-plus" class="mb-4" @click="openCreateModal">
+      <el-button
+        v-if="canCreateDonation"
+        type="primary"
+        icon="el-icon-plus"
+        class="mb-4"
+        @click="openCreateModal"
+      >
         Donor Create Donation
       </el-button>
     </div>
 
-    <!-- Donations Table -->
-    <el-table v-if="canViewTable" :data="filteredDonations || []" style="width: 100%" v-loading="loading">
-      <el-table-column prop="id" label="ID" width="50" />
-      <el-table-column label="Donor" width="150">
-        <template #default="{ row }">{{ row?.donor_id || 'N/A' }}</template>
-      </el-table-column>
-      <!-- <el-table-column label="Foodbank" width="150">
-          <template #default="{ row }">{{ getFoodbankName(row?.foodbank_id) || 'N/A' }}</template>
-        </el-table-column> -->
-      <!-- <el-table-column label="Recipient" width="150">
-          <template #default="{ row }">{{ getRecipientName(row.recipient_id) }}</template>
-        </el-table-column> -->
-      <el-table-column label="Foodbank" width="150">
-        <template #default="{ row }">
-          <div v-if="!row.foodbank_id">
-            <el-button type="primary" size="small" @click="toggleDropdown(row.id)">Assign Foodbank</el-button>
-            <el-select
-              v-if="dropdownVisible[row.id]"
-              v-model="selectedFoodbanks[row.id]"
-              placeholder="Select foodbank"
-              size="small"
-              @change="assignFoodbankToDonation(row.id)"
-            >
-              <el-option v-for="fb in foodbanks" :key="fb.id" :label="fb.name" :value="fb.id" />
-            </el-select>
-          </div>
-          <div v-else>{{ getFoodbankName(row?.foodbank_id) || 'N/A' }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="type" label="Type" width="120" />
-      <el-table-column prop="quantity" label="Quantity" width="100" />
-      <el-table-column prop="description" label="Description" width="250">
-        <template #default="{ row }">{{ row?.description || 'N/A' }}</template>
-      </el-table-column>
-
-      <el-table-column prop="status" label="Status" width="120">
-        <template #default="{ row }">
-          <el-tag :type="row?.status === 'delivered' ? 'success' : 'warning'">
-            {{ row?.status || 'Pending' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Actions" width="300">
-        <template #default="{ row }">
-          <el-button v-if="canEdit" size="small" @click="openEditModal(row)">Edit</el-button>
-          <el-button v-if="canDelete" size="small" type="danger" @click="deleteDonation(row.id)">Delete</el-button>
-          <el-button v-if="isAdmin && canApproveOrReject" size="small" type="primary" @click="markAsCompleted(row.id)">
-            Complete
-          </el-button>
-
-          <!-- Approve and Reject Buttons -->
-          <el-button v-if="isAdmin && row.status === 'pending' && canApproveOrReject" size="small" type="success" @click="changeDonationStatus(row.id, 'approved')">
-            Approve
-          </el-button>
-          <el-button v-if="isAdmin && row.status === 'pending' && canApproveOrReject" size="small" type="danger" @click="changeDonationStatus(row.id, 'rejected')">
-            Reject
-          </el-button>
-
-
-        </template>
-      </el-table-column>
-    </el-table>
-    <div v-else class="no-access">
-      <el-alert title="You do not have access to view this table." type="warning" show-icon />
+    <div class="content-wrapper">
+      <div class="table-container">
+        <el-table
+          v-if="canViewTable"
+          :data="filteredDonations || []"
+          style="width: 100%"
+          v-loading="loading"
+          border
+          height="400"
+          :scrollbar-always-on="true"
+        >
+          <el-table-column prop="id" label="ID" width="50" />
+          <el-table-column label="Donor" width="150">
+            <template #default="{ row }">{{ row?.donor_id || "N/A" }}</template>
+          </el-table-column>
+          <el-table-column label="Foodbank" width="150">
+            <template #default="{ row }">
+              <div v-if="!row.foodbank_id">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="toggleDropdown(row.id)"
+                >
+                  Assign Foodbank
+                </el-button>
+                <el-select
+                  v-if="dropdownVisible[row.id]"
+                  v-model="selectedFoodbanks[row.id]"
+                  placeholder="Select foodbank"
+                  size="small"
+                  @change="assignFoodbankToDonation(row.id)"
+                >
+                  <el-option
+                    v-for="fb in foodbanks"
+                    :key="fb.id"
+                    :label="fb.name"
+                    :value="fb.id"
+                  />
+                </el-select>
+              </div>
+              <div v-else>{{ getFoodbankName(row?.foodbank_id) || "N/A" }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="type" label="Type" width="120" />
+          <el-table-column prop="quantity" label="Quantity" width="100" />
+          <el-table-column prop="description" label="Description" width="250">
+            <template #default="{ row }">{{ row?.description || "N/A" }}</template>
+          </el-table-column>
+          <el-table-column prop="status" label="Status" width="120">
+            <template #default="{ row }">
+              <el-tag :type="row?.status === 'delivered' ? 'success' : 'warning'">
+                {{ row?.status || "Pending" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="Actions" width="300">
+            <template #default="{ row }">
+              <el-button
+                v-if="canEdit"
+                size="small"
+                @click="openEditModal(row)"
+              >
+                Edit
+              </el-button>
+              <el-button
+                v-if="canDelete"
+                size="small"
+                type="danger"
+                @click="deleteDonation(row.id)"
+              >
+                Delete
+              </el-button>
+              <el-button
+                v-if="isAdmin && canApproveOrReject"
+                size="small"
+                type="primary"
+                @click="markAsCompleted(row.id)"
+              >
+                Complete
+              </el-button>
+              <el-button
+                v-if="isAdmin && row.status === 'pending' && canApproveOrReject"
+                size="small"
+                type="success"
+                @click="changeDonationStatus(row.id, 'approved')"
+              >
+                Approve
+              </el-button>
+              <el-button
+                v-if="isAdmin && row.status === 'pending' && canApproveOrReject"
+                size="small"
+                type="danger"
+                @click="changeDonationStatus(row.id, 'rejected')"
+              >
+                Reject
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
-    <el-pagination
-      v-model:current-page="pagination.currentPage"
-      :page-size="pagination.perPage"
-      :total="totalDonations"
-      @current-change="setPage"
-      layout="prev, pager, next"
-      class="mt-4"
-    />
+    <div class="pagination-container">
+      <el-pagination
+        v-model:current-page="pagination.currentPage"
+        :page-size="pagination.perPage"
+        :total="totalDonations"
+        @current-change="setPage"
+        layout="prev, pager, next"
+      />
+    </div>
   </div>
 
   <!-- Create/Edit Modal -->
 
-  <el-dialog v-model="isModalOpen" :title="isEditing ? 'Edit Donation' : 'Create Donation'">
-    <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
-      <el-form-item v-if="isAdmin" label="Donor" prop="donor_id">
-        <el-select v-model="form.donor_id" placeholder="Select donor">
-          <el-option v-for="d in donors" :key="d.id" :label="d.name" :value="d.id" />
-        </el-select>
-      </el-form-item>
+<el-dialog v-model="isModalOpen" :title="isEditing ? 'Edit Donation' : 'Create Donation'">
+  <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
+    <el-form-item v-if="isAdmin" label="Donor" prop="donor_id">
+      <el-select v-model="form.donor_id" placeholder="Select donor">
+        <el-option v-for="d in donors" :key="d.id" :label="d.name" :value="d.id" />
+      </el-select>
+    </el-form-item>
 
-      <el-form-item label="Foodbank" prop="foodbank_id">
-        <el-select v-model="form.foodbank_id" placeholder="Select foodbank (optional)">
-          <el-option v-for="fb in foodbanks" :key="fb.id" :label="fb.name" :value="fb.id" />
-        </el-select>
-      </el-form-item>
+    <el-form-item label="Foodbank" prop="foodbank_id">
+      <el-select v-model="form.foodbank_id" placeholder="Select foodbank (optional)">
+        <el-option v-for="fb in foodbanks" :key="fb.id" :label="fb.name" :value="fb.id" />
+      </el-select>
+    </el-form-item>
 
-      <el-form-item label="Type" prop="type">
-        <el-select v-model="form.type" placeholder="Select donation type">
-          <el-option label="Food" value="food" />
-          <el-option label="Clothing" value="clothing" />
-          <el-option label="Money" value="money" />
-        </el-select>
-      </el-form-item>
+    <el-form-item label="Type" prop="type">
+      <el-select v-model="form.type" placeholder="Select donation type">
+        <el-option label="Food" value="food" />
+        <el-option label="Clothing" value="clothing" />
+        <el-option label="Money" value="money" />
+      </el-select>
+    </el-form-item>
 
-      <el-form-item label="Quantity" prop="quantity">
-        <el-input v-model="form.quantity" type="number" placeholder="Enter quantity" />
-      </el-form-item>
-      <el-form-item label="Description" prop="description">
-        <el-input v-model="form.description" type="textarea" placeholder="Enter a description (optional)" />
-      </el-form-item>
+    <el-form-item label="Quantity" prop="quantity">
+      <el-input v-model="form.quantity" type="number" placeholder="Enter quantity" />
+    </el-form-item>
+    <el-form-item label="Description" prop="description">
+      <el-input v-model="form.description" type="textarea" placeholder="Enter a description (optional)" />
+    </el-form-item>
 
-      <el-form-item>
-        <el-button @click="isModalOpen = false">Cancel</el-button>
-        <el-button type="primary" @click="handleSave">Save</el-button>
-      </el-form-item>
-    </el-form>
-  </el-dialog>
+    <el-form-item>
+      <el-button @click="isModalOpen = false">Cancel</el-button>
+      <el-button type="primary" @click="handleSave">Save</el-button>
+    </el-form-item>
+  </el-form>
+</el-dialog>
+
+
 </template>
 
 <script setup>

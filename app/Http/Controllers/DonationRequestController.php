@@ -103,7 +103,10 @@ class DonationRequestController extends Controller
         $type = $request->query('type');
         $donorId = $request->query('donor_id');
         $sortField = $request->query('sortField', 'created_at'); // Default sort by created_at
-        $sortOrder = $request->query('sortOrder', 'desc');        // Default sort order
+        $sortOrder = in_array(strtolower($request->query('sortOrder', 'desc')), ['asc', 'desc']) 
+        ? strtolower($request->query('sortOrder', 'desc')) 
+        : 'desc';
+       // Default sort order
 
         // Initialize query builder with necessary relationships
         $query = DonationRequest::with(['foodbank', 'donor', 'createdBy']);  // Include createdBy relationship

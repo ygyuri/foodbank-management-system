@@ -39,6 +39,10 @@ const usePermissionStore = permissionStore()
 const routes = computed(() => {
   return usePermissionStore.routes
 })
+
+// Log the routes available in the sidebar
+console.log(routes.value);
+
 const isCollapse = computed(() => {
   return useAppStore.sidebar.opened
 })

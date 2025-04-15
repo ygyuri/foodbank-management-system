@@ -269,4 +269,14 @@ class User extends Authenticatable
                     DB::raw('COUNT(*) as count'),
                 ]);
     }
+
+        public function foodbankActivities()
+    {
+        return $this->hasMany(FoodbankActivity::class, 'foodbank_id');
+    }
+
+    public function donorTransactions()
+    {
+        return $this->hasMany(DonorTransaction::class, 'donor_id');
+    }
 }

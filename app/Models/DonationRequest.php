@@ -82,4 +82,10 @@ class DonationRequest extends Model
     {
         return $query->where('status', 'rejected');
     }
+
+    public function foodbankActivity()
+{
+    return $this->hasOne(FoodbankActivity::class, 'related_id')
+                ->where('activity_type', 'fulfilled_request');
+}
 }

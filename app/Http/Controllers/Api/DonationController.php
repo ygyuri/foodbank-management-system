@@ -17,6 +17,7 @@ use Exception;
 
 class DonationController extends BaseController
 {
+  
     /**
      * Display a listing of donations with pagination and optional filtering.
      *
@@ -27,24 +28,25 @@ class DonationController extends BaseController
     {
         Log::info('Fetching donations', ['request' => $request->all()]);
         Log::info('Donations route accessed');
-
+    
         $validated = $request->validate([
             'type' => 'nullable|in:food,clothing,money',
             'donor_id' => 'nullable|exists:users,id',
             'foodbank_id' => 'nullable|exists:users,id',
             'recipient_id' => 'nullable|exists:users,id',
         ]);
-
+    
         try {
             $donations = Donation::with(['donor', 'foodbank', 'recipient'])
                 ->when($validated['type'] ?? null, fn($query, $type) => $query->where('type', $type))
                 ->when($validated['donor_id'] ?? null, fn($query, $donorId) => $query->where('donor_id', $donorId))
                 ->when($validated['foodbank_id'] ?? null, fn($query, $foodbankId) => $query->where('foodbank_id', $foodbankId))
                 ->when($validated['recipient_id'] ?? null, fn($query, $recipientId) => $query->where('recipient_id', $recipientId))
+                ->orderBy('created_at', 'desc') // Ensure descending order by creation date
                 ->paginate(10);
-
+    
             Log::info('Donations fetched successfully', ['donations' => $donations]);
-
+    
             return response()->json($donations, 200);
         } catch (\Exception $e) {
             Log::error('Failed to fetch donations', ['error' => $e->getMessage()]);

@@ -44,13 +44,15 @@ export default defineConfig({
     alias: {
       '@': path.join(__dirname, '/resources/js'),
       //remove i18n waring
-      'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
+      'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
+      //'jspdf': 'jspdf/dist/jspdf.umd.min.js', // Correct alias for jspdf // Ensure jspdf resolves to the UMD build
     }
   },
   build: {
     sourcemap: true, // Enable source maps
     manifest: true,
     outDir: 'public/build',
+    emptyOutDir: true, // Ensure the output directory is cleared before building
    
     chunkSizeWarningLimit: 5000,
     
@@ -64,9 +66,10 @@ export default defineConfig({
       }
     },
     rollupOptions: {
-     
-      input: 'resources/js/app.js'
-    }
+      input: 'resources/js/app.js',
+      // external: ['jspdf', 'jspdf-autotable', 'file-saver'], // Add file-saver here // Add jspdf and its plugin here
+      external: ['json2csv'], 
+    },
   },
   css: {
     postcss: {
@@ -84,10 +87,14 @@ export default defineConfig({
         }
       ]
     },
+    // ...existing config
     preprocessorOptions: {
       scss: {
         additionalData: `@use "@/styles/variables.scss" as *;`
       }
     }
+  },
+  optimizeDeps: {
+    exclude: ['json2csv'], // Exclude json2csv from optimization
   }
 })

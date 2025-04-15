@@ -14,6 +14,8 @@ use App\Models\Notification;
 use App\Http\Controllers\AnalyticsReportController;
 use App\Http\Controllers\RolePermissionController;
 
+use App\Http\Controllers\ReportController;
+
 //use App\Http\Controllers\RequestFBController;
 //use App\Http\Controllers\Api\DonationController;
 /*
@@ -26,6 +28,24 @@ use App\Http\Controllers\RolePermissionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::prefix('reports')->group(function () {
+    // Fetch all foodbanks or a specific foodbank by ID
+    Route::get('/foodbank/{foodbankId?}', [ReportController::class, 'generateFoodbankActivityReport'])
+        ->name('reports.foodbank');
+
+    // Fetch all donors or a specific donor by ID
+    Route::get('/donor/{donorId?}', [ReportController::class, 'generateDonorTransactionReport'])
+        ->name('reports.donor');
+
+    // Fetch all recipients or a specific recipient by ID
+    Route::get('/recipient/{recipientId?}', [ReportController::class, 'generateRecipientRequestReport'])
+        ->name('reports.recipient');
+
+    // Fetch system summary
+    Route::get('/system-summary', [ReportController::class, 'generateSystemSummaryReport'])
+        ->name('reports.system-summary');
+});
 
 Route::post('/register', [UserController::class, 'register'])->name('register');
 // Analytics report routes

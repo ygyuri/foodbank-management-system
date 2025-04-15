@@ -148,6 +148,41 @@ export const constantRoutes = [
         meta: { title: 'Feedback List', bootstrapIcon: 'chat-left-text', permissions: ['manage feedback'] }
       }
     ]
+  },
+
+  // 🆕 New Routes for Report
+  {
+    path: '/reports',
+    component: Layout,
+    redirect: '/reports/donor-transactions',
+    name: 'ReportsManagement',
+    meta: { title: 'Reports Management', bootstrapIcon: 'file-earmark-bar-graph' },
+    children: [
+      {
+        path: 'donor-transactions',
+        component: () => import('@/components/Reports/DonorTransactionsReport.vue'),
+        name: 'DonorTransactionsReport',
+        meta: { title: 'Donor Transactions ', bootstrapIcon: 'person-badge' }
+      },
+      {
+        path: 'foodbank-activity',
+        component: () => import('@/components/Reports/FoodbankActivityReport.vue'),
+        name: 'FoodbankActivityReport',
+        meta: { title: 'Foodbank Activity ', bootstrapIcon: 'building' }
+      },
+      {
+        path: 'recipient-requests',
+        component: () => import('@/components/Reports/RecipientRequestsReport.vue'),
+        name: 'RecipientRequests',
+        meta: { title: 'Recipient Requests ', bootstrapIcon: 'file-earmark-text' }
+      },
+      {
+        path: 'system-summary',
+        component: () => import('@/components/Reports/SystemSummaryReport.vue'),
+        name: 'SystemSummaryReport',
+        meta: { title: 'System Summary ', bootstrapIcon: 'bar-chart-line' }
+      }
+    ]
   }
 ]
 
@@ -163,6 +198,9 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 }),
   history: createWebHashHistory()
 })
+
+// Log all registered routes
+console.log(router.getRoutes());
 
 export function resetRouter() {
   const asyncRouterNameArr = asyncRoutes.map((mItem) => mItem.name)
